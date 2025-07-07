@@ -22,7 +22,7 @@ describe('--formatter', function () {
                 protocol: 'http',
                 port: 3000,
                 recordRequests: false,
-                stubs: [{ responses: [{ is: { body: 'SUCCESS' } }] }]
+                stubs: [{ responses: [{ is: { bodyEncoding: 'utf8', body: 'SUCCESS' } }] }]
             },
             formatter = `${__dirname}/formatters/base64Formatter`;
         await mb.start([]);
@@ -51,7 +51,7 @@ describe('--formatter', function () {
                 protocol: 'http',
                 port: 3000,
                 recordRequests: false,
-                stubs: [{ responses: [{ is: { body: 'SUCCESS' } }] }]
+                stubs: [{ responses: [{ is: { bodyEncoding: 'utf8', body: 'SUCCESS' } }] }]
             },
             formatter = `${__dirname}/formatters/asyncBase64Formatter`;
         await mb.start([]);
@@ -80,7 +80,7 @@ describe('--formatter', function () {
                 protocol: 'http',
                 port: 3000,
                 recordRequests: false,
-                stubs: [{ responses: [{ is: { body: 'SUCCESS' } }] }]
+                stubs: [{ responses: [{ is: { bodyEncoding: 'utf8', body: 'SUCCESS' } }] }]
             },
             formatter = `${__dirname}/formatters/base64Formatter`;
         await mb.start([]);

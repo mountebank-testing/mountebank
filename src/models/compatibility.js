@@ -10,6 +10,38 @@ const helpers = require('../util/helpers');
  * @module
  */
 
+
+/**
+ * While the new response structure uses bodyEncoding. Inject default old encoding 'utf8'.
+ * @param {Object} response - the reponse structure
+ */
+function upcastResponseEncoding (response) {
+    if (helpers.isObject(response) && response && 'body' in response && !('bodyEncoding' in response)) {
+        response.bodyEncoding = 'utf8';
+    }
+}
+
+function upcastStaticStubs (request) {
+    (request.stubs || []).forEach(stub => {
+        (stub.responses || []).forEach(response => {
+            if (response.is) {
+                upcastResponseEncoding(response.is);
+            }
+        });
+    });
+}
+
+function upcastStaticPredicates (request) {
+    (request.stubs || []).forEach(stub => {
+        (stub.predicates || []).forEach(predicate => {
+            Object.entries(predicate).forEach(entry => {
+                if (helpers.isObject(entry[1]) && 'body' in entry[1] && !('bodyEncoding' in entry[1])) {
+                    entry[1].bodyEncoding = 'utf8';
+                }
+            });
+        });
+    });
+}
 /**
  * The original shellTransform only accepted one command
  * The new syntax expects an array, creating a shell pipeline
@@ -109,6 +141,8 @@ function upcast (request) {
     upcastShellTransformToArray(request);
     upcastTcpProxyDestinationToUrl(request);
     upcastBehaviorsToArray(request);
+    upcastStaticStubs(request);
+    upcastStaticPredicates(request);
 }
 
 /**
@@ -129,5 +163,6 @@ function downcastInjectionConfig (config) {
 
 module.exports = {
     upcast,
+    upcastResponseEncoding,
     downcastInjectionConfig
 };
