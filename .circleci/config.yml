@@ -37,7 +37,7 @@ jobs:
 
   build:
     executor: node-active
-    resource_class: xlarge
+    resource_class: large
     environment:
       - CC_TEST_REPORTER_ID=8bc3a050a2f8ef1cc460e5f4c72d18a689c8ae0981bf494031eb4eb28bbd0b0b
     steps:
@@ -106,7 +106,7 @@ jobs:
 
   mac:
     macos:
-      xcode: 12.5.1
+      xcode: 14.0
     steps:
       - checkout
       - run:
@@ -133,7 +133,7 @@ jobs:
 
   maintenanceOutOfProcessImposters:
     executor: node-maintenance
-    resource_class: xlarge
+    resource_class: large
     environment:
       - MB_PORT: 3535
       - MB_PERSISTENT: true
