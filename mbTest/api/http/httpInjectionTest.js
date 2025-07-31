@@ -247,7 +247,7 @@ const assert = require('assert'),
             });
 
             it('should allow access to the global process object', async function () {
-                // https://github.com/bbyars/mountebank/issues/134
+                // https://github.com/mountebank-testing/mountebank/issues/134
                 const fn = () => ({ body: process.env.USER || 'test' }),
                     stub = { responses: [{ inject: fn.toString() }] },
                     request = { protocol, port, stubs: [stub] };

@@ -141,7 +141,7 @@ describe('http proxy stubs', function () {
             assert.ok(response.headers.location.indexOf('google.') >= 0, response.headers.location);
         });
 
-        // https://github.com/bbyars/mountebank/issues/600
+        // https://github.com/mountebank-testing/mountebank/issues/600
         it('should handle the connect method', async function () {
             const proxy = {
                 protocol: 'https',
@@ -154,7 +154,7 @@ describe('http proxy stubs', function () {
 
             const response = await clientSecure.responseFor({
                 host: 'api.github.com',
-                path: '/repos/bbyars/mountebank/contents/README.md',
+                path: '/repos/mountebank-testing/mountebank/contents/README.md',
                 port: 443,
                 agent: new HttpsProxyAgent({
                     keepAlive: true,

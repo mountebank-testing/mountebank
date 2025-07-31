@@ -102,7 +102,7 @@ function selectTransform (config, options, logger) {
         const stringTransform = options.shouldForceStrings ? forceStrings : combinators.identity;
 
         // use keyCaseSensitive instead of caseSensitive to help "matches" predicates too
-        // see https://github.com/bbyars/mountebank/issues/361
+        // see https://github.com/mountebank-testing/mountebank/issues/361
         if (!cloned.keyCaseSensitive) {
             cloned.jsonpath.selector = cloned.jsonpath.selector.toLowerCase();
         }

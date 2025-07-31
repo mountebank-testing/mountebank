@@ -292,7 +292,7 @@ function merge (defaults, overrides) {
             });
 
             it('should correctly set content-length for binary data', async function () {
-                // https://github.com/bbyars/mountebank/issues/204
+                // https://github.com/mountebank-testing/mountebank/issues/204
                 const stub = {
                         responses: [{
                             is: {
@@ -329,7 +329,7 @@ function merge (defaults, overrides) {
             });
 
             it('should handle JSON null values', async function () {
-                // https://github.com/bbyars/mountebank/issues/209
+                // https://github.com/mountebank-testing/mountebank/issues/209
                 const stub = { responses: [{ is: { body: { name: 'test', type: null } } }] },
                     request = { protocol, port, stubs: [stub] };
                 await api.createImposter(request);
