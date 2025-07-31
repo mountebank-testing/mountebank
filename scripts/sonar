@@ -21,18 +21,18 @@ echo sonar.host.url=https://sonarcloud.io >> sonar-scanner-${VERSION}-${OS}/conf
 
 echo "Running sonar-scanner..."
 sonar-scanner \
-    -Dsonar.projectKey=mountebank \
+    -Dsonar.projectKey=mountebank-testing_mountebank \
     -Dsonar.projectName=mountebank \
     -Dsonar.links.homepage=http://www.mbtest.org \
-    -Dsonar.links.ci=https://circleci.com/gh/bbyars/workflows/mountebank \
-    -Dsonar.links.issue=https://github.com/bbyars/mountebank/issues \
-    -Dsonar.links.scm=https://github.com/bbyars/mountebank \
+    -Dsonar.links.ci=https://circleci.com/gh/mountebank-testing/workflows/mountebank \
+    -Dsonar.links.issue=https://github.com/mountebank-testing/mountebank/issues \
+    -Dsonar.links.scm=https://github.com/mountebank-testing/mountebank \
     -Dsonar.sources=src \
     -Dsonar.exclusions=src/public/scripts/jquery \
     -Dsonar.tests=test,mbTest \
     -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
     -Dsonar.host.url=https://sonarcloud.io \
-    -Dsonar.organization=bbyars-github \
+    -Dsonar.organization=mountebank-testing \
     -Dsonar.token=$SONARQUBE_TOKEN
 
 rm -rf sonar-scanner-${VERSION}-${OS}
