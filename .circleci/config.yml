@@ -19,6 +19,7 @@ executors:
 
 orbs:
   win: circleci/windows@2.2.0
+  qlty: qltysh/qlty-orb@0.0.11
 
 jobs:
   pr:
@@ -52,12 +53,23 @@ jobs:
           name: Version
           command: node tasks/version.js
       - run:
-          name: Docs and Static Analysis
+          name: Test
           command: |
             npm run lint
-            scripts/codeclimate
+            npm run test:cover
+      - qlty/coverage_publish: # Upload coverage report to qlty.sh
+          files: coverage/lcov.info
+      - run:
+          name: Upload coverage report to coveralls
+          command: |
             cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
+      - run:
+          name: Run sonar report
+          command: |
             scripts/sonar
+      - run:
+          name: Generate and deploy docs
+          command: |
             npm run jsdoc && node tasks/deploy/docs.js
       - run:
           name: Dist
