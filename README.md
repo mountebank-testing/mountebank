@@ -1,8 +1,12 @@
-# bbyars/mountebank is no longer maintained
+# Project in transition
 
-Unfortunately, there are no easy exit ramps for hobbyist open source. I've greatly enjoyed building and maintaining mountebank, but after a decade, I find myself no longer having the energy or passion to continue to do so on nights, weekends, and holidays. Handing someone else that responsibility for a 10-year-old code base that they did not write is... challenging.
+Currently the project is in transition to a collaborative group effort under a github organisation.
 
-Please fork at will, and thank you for being part of the community.
+Work is being done to migrate and upgrade all CI/CD integrations from personal accounts to organisation accounts.
+
+Pull requests are welcome, but don't expect anything to be merged until CI/CD infrastucture is up and running.
+
+Many thanks goes to [Brandon Byars](https://github.com/bbyars) for all the effort building mountebank in the first place and maintaining the project for more than a decade and finally being helpfull and collaborative during this transition phase.
 
 # Welcome, friend
 
