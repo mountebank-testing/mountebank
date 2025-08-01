@@ -68,9 +68,13 @@ jobs:
 #          command: |
 #            scripts/sonar
       - run:
-          name: Generate and deploy docs
+          name: Generate docs
           command: |
-            npm run jsdoc && node tasks/deploy/docs.js
+            npm run jsdoc
+      - run:
+          name: Deploy docs
+          command: |
+            node tasks/deploy/docs.js
       - run:
           name: Dist
           command: node tasks/dist.js
