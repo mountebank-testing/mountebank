@@ -218,7 +218,7 @@ jobs:
     executor: node-active
     steps:
       - setup_remote_docker:
-          version: 20.10.24
+          version: default
       - attach_workspace:
           at: .
       - run:
@@ -241,7 +241,7 @@ jobs:
       - MB_RELEASE: true
     steps:
       - setup_remote_docker:
-          version: 20.10.24
+          version: default
       - checkout
       - run:
           name: Install Dependencies
