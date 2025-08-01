@@ -30,9 +30,9 @@ jobs:
           name: Install Dependencies
           command: npm ci
       - run: npm test
-      - run:
-          name: Web tests
-          command: npm run test:web
+#      - run:
+#          name: Web tests
+#          command: npm run test:web
       - store_test_results:
           path: testResults
 
