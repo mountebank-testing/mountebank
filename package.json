@@ -7,10 +7,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bbyars/mountebank.git"
+    "url": "https://github.com/mountebank-testing/mountebank.git"
   },
   "bugs": {
-    "url": "https://github.com/bbyars/mountebank/issues",
+    "url": "https://github.com/mountebank-testing/mountebank/issues",
     "email": "brandon.byars@gmail.com"
   },
   "bin": {
