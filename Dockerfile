@@ -7,13 +7,7 @@ RUN node -v && npm -v
 RUN npm ci
 # Version
 RUN node tasks/version.js
-# Docs and Static Analysis
-RUN npm run lint || true
-RUN scripts/codeclimate
-# RUN cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
-# RUN scripts/sonar
 RUN npm run jsdoc
-# RUN node tasks/deploy/docs.js
 # Dist
 RUN node tasks/dist.js
 
