@@ -15,7 +15,7 @@ describe('HttpRequest', function () {
                 socket: { remoteAddress: '', remotePort: '' },
                 setEncoding: mock(),
                 url: 'http://localhost/',
-                rawHeaders: []
+                rawHeaders: ['Content-Type', 'text/plain']
             });
         });
 
@@ -127,6 +127,7 @@ describe('HttpRequest', function () {
         it('should set body from data gzipped events', async function () {
             request.rawHeaders = [
                 'Content-Encoding', 'gzip',
+                'Content-Type', 'text/plain; charset=utf8',
                 'Host', '127.0.0.1:8000'
             ];
 
