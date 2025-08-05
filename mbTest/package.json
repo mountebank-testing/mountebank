@@ -1,5 +1,5 @@
 {
-    "name": "mountebank-tests",
+    "name": "@mbtest/mountebank-tests",
     "version": "0.0.1",
     "author": "Brandon Byars <brandon.byars@gmail.com>",
     "private": true,
