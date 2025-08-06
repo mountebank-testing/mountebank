@@ -101,6 +101,10 @@ the correct behavior under DNS failures. If your ISP is kind enough to hijack th
 in an attempt to allow you to conveniently peruse their advertising page, those tests will fail.
 Setting MB_AIRPLANE_MODE=true will ignore those tests.
 
+If you would like to develop in an isolated environment without needing to install Node, the repository includes a [`devcontainer.json`](https://github.com/mountebank-testing/mountebank/blob/master/.devcontainer/devcontainer.json) file.
+[Development Containers](https://containers.dev/) allow you to use a Docker container as your development environment.
+An easy way to make use of this is through the [VS Code Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
 When you're ready to commit, do the following
 
 * Look at your diffs! Many times accidental whitespace changes get included, adding noise
