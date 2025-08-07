@@ -214,6 +214,35 @@ jobs:
             (cd dist/test && npm run web)
       - store_test_results:
           path: dist/test/testResults
+  dockerBuildPush:
+    parameters:
+      release:
+        type: boolean
+        default: false
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: |
+          echo export MB_VERSION=`grep version package.json | sed -e 's/^  "version": "\(.*\)", */\1/'` >> "$BASH_ENV"
+      - run: |
+          if [ "<<parameters.release>>" = "true" ]; then
+              export DOCKER_MB_ALIAS=$([ "$CIRCLE_BRANCH" = "master" ] && echo beta || echo "$CIRCLE_BRANCH")
+              echo export DOCKER_MB_ALIAS="$DOCKER_MB_ALIAS" >> "$BASH_ENV"
+          #    echo export DOCKER_MB_VERSION=$MB_VERSION-$DOCKER_MB_ALIAS-$CIRCLE_BUILD_NUM-$(echo $CIRCLE_SHA1 | cut -c1-7) >> "$BASH_ENV"
+              echo export DOCKER_MB_VERSION=$MB_VERSION-$DOCKER_MB_ALIAS-$CIRCLE_BUILD_NUM >> "$BASH_ENV"
+          else
+              echo export DOCKER_MB_ALIAS="latest" >> "$BASH_ENV"
+              echo export DOCKER_MB_VERSION=$MB_VERSION >> "$BASH_ENV"
+          fi
+      - run: echo bbyars/mountebank:$DOCKER_MB_VERSION
+      - run: echo bbyars/mountebank:$DOCKER_MB_ALIAS
+      - run: docker context create mountebank
+      - run: docker buildx create --driver docker-container mountebank --use
+      - run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USER --password-stdin
+      - run: docker buildx build --platform=linux/arm64,linux/amd64 --tag bbyars/mountebank:$DOCKER_MB_VERSION --tag bbyars/mountebank:$$DOCKER_MB_ALIAS --push .
 
   deploy:
     executor: node-active
@@ -225,11 +254,6 @@ jobs:
       - run:
           name: Publish npm
           command: scripts/publishNpm
-      - run:
-          name: Publish Docker
-          command: |
-            export MB_VERSION=`scripts/printVersion`
-            scripts/publishDocker $MB_VERSION
       - run:
           name: Deploy to Heroku
           command: scripts/publishHeroku mountebank-dev
@@ -253,11 +277,6 @@ jobs:
       - run:
           name: Publish npm
           command: scripts/publishNpm
-      - run:
-          name: Publish Docker
-          command: |
-            export MB_VERSION=`scripts/printVersion`
-            scripts/publishDocker $MB_VERSION
       - run:
           name: Deploy to Heroku
           command: scripts/publishHeroku mountebank
@@ -308,6 +327,15 @@ workflows:
           filters:
             branches:
               only: master
+      - dockerBuildPush:
+          requires: # These are technically not necessary
+            - maintenanceOutOfProcessImposters
+            - currentWithFileDB
+            - performance
+            - web
+          filters:
+            branches:
+              only: master
       - deploy:
           requires:
             - maintenanceOutOfProcessImposters
@@ -325,4 +353,10 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-
+      - dockerBuildPush:
+          release: true
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
