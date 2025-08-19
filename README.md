@@ -38,7 +38,7 @@ At the moment, the following protocols are implemented, either directly in the t
 mountebank supports mock verification, stubbing with advanced predicates, JavaScript injection,
 and record-playback through proxying.
 
-![how it works](https://github.com/bbyars/mountebank/blob/master/src/public/images/overview.gif?raw=true)
+![how it works](https://github.com/mountebank-testing/mountebank/blob/master/src/public/images/overview.gif?raw=true)
 
 See [getting started](http://localhost:2525/docs/gettingStarted) guide for more information once you have it running locally.
 
@@ -64,7 +64,7 @@ After installing and running, view the docs in your browser at <http://localhost
 
 You can always learn more and support mountebank development by buying the book:
 
-[![Testing Microservices with Mountebank](https://github.com/bbyars/mountebank/blob/master/src/public/images/book.jpg)](https://www.manning.com/books/testing-microservices-with-mountebank?a_aid=mb&a_bid=ee3288f4)
+[![Testing Microservices with Mountebank](https://github.com/mountebank-testing/mountebank/blob/master/src/public/images/book.jpg)](https://www.manning.com/books/testing-microservices-with-mountebank?a_aid=mb&a_bid=ee3288f4)
 
 ## Building
 
@@ -88,7 +88,7 @@ the environment variable `MB_AIRPLANE_MODE=true`, which will avoid tests requiri
 
 [npm-badge]: https://nodei.co/npm/mountebank.png?downloads=true&downloadRank=true&stars=true
 [npm]: https://www.npmjs.com/package/mountebank
-[codeclimate-badge]: https://codeclimate.com/github/bbyars/mountebank/badges/gpa.svg
-[codeclimate]: https://codeclimate.com/github/bbyars/mountebank
-[codeclimate-coverage-badge]: https://codeclimate.com/github/bbyars/mountebank/badges/coverage.svg
-[codeclimate-coverage]: https://codeclimate.com/github/bbyars/mountebank/coverage
+[codeclimate-badge]: https://codeclimate.com/github/mountebank-testing/mountebank/badges/gpa.svg
+[codeclimate]: https://codeclimate.com/github/mountebank-testing/mountebank
+[codeclimate-coverage-badge]: https://codeclimate.com/github/mountebank-testing/mountebank/badges/coverage.svg
+[codeclimate-coverage]: https://codeclimate.com/github/mountebank-testing/mountebank/coverage
