@@ -203,7 +203,7 @@ const fs = require('fs-extra'),
                     'Starts on port 3000, allowing injections and turning on debug logging')
                 .example("mb --ipWhitelist '192.168.1.20|192.158.1.21'",
                     'Starts on port 2525 with the given ip whitelist')
-                .epilog('Note on the last example that start is assumed if no command is specified\n\nFor more information, see http://www.mbtest.org/docs/commandLine');
+                .epilog('Note on the last example that start is assumed if no command is specified\n\nFor more information, see http://www.mbtest.dev/docs/commandLine');
         })
         .command('stop', 'Stops the server', stopYargs => {
             stopYargs
@@ -213,7 +213,7 @@ const fs = require('fs-extra'),
                 .options({ pidfile: options.pidfile, rcfile: options.rcfile })
                 .example('mb stop', 'Stops the process identified in mb.pid')
                 .example('mb stop --pidfile test.pid', 'Stops the process identified in test.pid')
-                .epilog('For more information, see http://www.mbtest.org/docs/commandLine');
+                .epilog('For more information, see http://www.mbtest.dev/docs/commandLine');
         })
         .command('restart', "Stops the server if it's running and restarts it", restartYargs => {
             restartYargs
@@ -224,7 +224,7 @@ const fs = require('fs-extra'),
                 .example('mb restart --port 3000 --allowInjection --loglevel debug',
                     'Restarts on port 3000, allowing injections and turning on debug logging')
                 .example('mb restart --pidfile test.pid', 'Stops the process identified in test.pid and restarts on port 2525')
-                .epilog('The port does not have to match the currently running instance, but the pidfile must match\n\nFor more information, see http://www.mbtest.org/docs/commandLine');
+                .epilog('The port does not have to match the currently running instance, but the pidfile must match\n\nFor more information, see http://www.mbtest.dev/docs/commandLine');
         })
         .command('save', 'Saves current imposter configuration to a config file', saveYargs => {
             saveYargs
@@ -242,7 +242,7 @@ const fs = require('fs-extra'),
                 .example('mb save --savefile config.json --removeProxies --port 3000',
                     'Saves the config without proxies into config.json by querying port 3000')
                 .example('mb save', 'Saves the config as is into mb.json by querying port 2525')
-                .epilog('For more information, see http://www.mbtest.org/docs/commandLine');
+                .epilog('For more information, see http://www.mbtest.dev/docs/commandLine');
         })
         .command('replay',
             'Switches from record mode to replay by removing proxies',
@@ -255,11 +255,11 @@ const fs = require('fs-extra'),
                     .example('mb replay --port 3000',
                         'Resets the configuration of mountebank running on port 3000 to remove all proxies')
                     .example('mb replay', 'Resets the configuration of mountebank running on port 2525 to remove all proxies')
-                    .epilog('For more information, see http://www.mbtest.org/docs/commandLine');
+                    .epilog('For more information, see http://www.mbtest.dev/docs/commandLine');
             })
         .version()
         .wrap(null)
-        .epilog('mb [command] --help provides more details\n\nFor more information, see http://www.mbtest.org/docs/commandLine')
+        .epilog('mb [command] --help provides more details\n\nFor more information, see http://www.mbtest.dev/docs/commandLine')
         .argv;
 
 function fixAliases (args) {

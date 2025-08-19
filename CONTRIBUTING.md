@@ -4,13 +4,13 @@ Congratulations! You're here because you want to join the millions of open sourc
 contributing to mountebank. The good news is that contributing is an easy process. In fact, you can
 make a difference without writing a single line of code. I am grateful for all of the following contributions:
 
-* Submitting an issue, either through github or the [support page](http://www.mbtest.org/support)
+* Submitting an issue, either through github or the [support page](http://www.mbtest.dev/support)
 * Commenting on existing issues
 * Answering questions in the [support forum](https://groups.google.com/forum/#!forum/mountebank-discuss)
 * Letting me know that you're using mountebank and how you're using it. It's surprisingly hard to find
 that out with open source projects, and provides healthy motivation. Feel free to email at
 brandon.byars@gmail.com
-* Writing about mountebank (bonus points if you link to the [home page](http://www.mbtest.org/))
+* Writing about mountebank (bonus points if you link to the [home page](http://www.mbtest.dev/))
 * Creating a how-to video about mountebank
 * Speaking about mountebank in conferences or meetups
 * Telling your friends about mountebank
@@ -48,7 +48,7 @@ expect more scrutiny for API changes, and don't be offended if I recommend some 
 agonize over the names in the API, and use tests to help me play with ideas.
 
 Before API changes can be released, the documentation and
-[contract page](http://www.mbtest.org/docs/api/contracts) need to be updated. The contract page
+[contract page](http://www.mbtest.dev/docs/api/contracts) need to be updated. The contract page
 is, I hope, friendly for users, but a bit unfriendly for maintainers. I'd love help fixing that.
 
 ### Protocol Agnosticism
@@ -199,7 +199,7 @@ are usually also wrapped in a `pre` block if they are meant to be visible on the
 the response, wrap the response `code` block within an `assertResponse` code block.
 
 The simplest example is on the overview page, documenting the hypermedia on the root path of the API.
-You can see the [actual documentation](http://www.mbtest.org/docs/api/overview#get-home) on the website.
+You can see the [actual documentation](http://www.mbtest.dev/docs/api/overview#get-home) on the website.
 It makes a request to `GET /` and validates the response headers and JSON body:
 
 ````xml
@@ -239,9 +239,9 @@ with the `Date` header above
 * If you want to display something other than what's tested, you can use the `change` element
 * If you don't want to document the entire response to focus in on the key elements, you can set
 the `partial` attribute on the `assertResponse` element to `true`. The
-[proxies page](http://www.mbtest.org/docs/api/proxies) makes heavy use of this feature.
+[proxies page](http://www.mbtest.dev/docs/api/proxies) makes heavy use of this feature.
 
-You can see an example using the `change` element on the [getting started](http://www.mbtest.org/docs/gettingStarted)
+You can see an example using the `change` element on the [getting started](http://www.mbtest.dev/docs/gettingStarted)
 page. The docs indicate that the default port is 2525, and so it intentionally displays all the
 example requests with that port, even though it may use a different port during test execution:
 
@@ -256,10 +256,10 @@ The two examples just shown include two types of steps. The following are suppor
 
 * `http` is the most common one, representing HTTP requests and responses.
 * `exec` is used for command line executions like the one shown above
-* `smtp` is used for SMTP examples, as on the [mock verification](http://www.mbtest.org/docs/api/mocks) page.
+* `smtp` is used for SMTP examples, as on the [mock verification](http://www.mbtest.dev/docs/api/mocks) page.
 It expects a `port` attribute indicating the port of the imposter smtp service
 * `file` is used to create and delete a file, as on the lookup examples on the
-  [behavior](http://www.mbtest.org/docs/api/behaviors) page. It expects a `filename` attribute. If
+  [behavior](http://www.mbtest.dev/docs/api/behaviors) page. It expects a `filename` attribute. If
    the `delete` attribute is set to "true", the file is deleted.
 
 As the doc tests get unwieldy to work with at times, I will often comment out all files except the
