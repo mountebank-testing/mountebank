@@ -24,7 +24,7 @@ pre-existing public writeup).
 
 Still want to write some code?  Great! You may want to keep the
 [source documentation](https://mountebank.firebaseapp.com/)
-handy, and you may want to review [the issues](https://github.com/bbyars/mountebank/issues).
+handy, and you may want to review [the issues](https://github.com/mountebank-testing/mountebank/issues).
 
 I have two high level goals for community contributions. First, I'd like contributing to be as fun
 as possible. Secondly, I'd like contributions to follow the design vision of mountebank.
@@ -138,8 +138,8 @@ The pattern now is, where possible, to scope the `require` calls inside the func
 In the spirit of being as lazy as possible towards maintaining code quality, I rely on linting heavily.
 You are welcome to fix any tech debt that you see in SaaS dashboards:
 
-* [Code Climate](https://codeclimate.com/github/bbyars/mountebank)
-* [Codacy](https://app.codacy.com/gh/bbyars/mountebank/dashboard)
+* [Code Climate](https://codeclimate.com/github/mountebank-testing/mountebank)
+* [Codacy](https://app.codacy.com/gh/mountebank-testing/mountebank/dashboard)
 * [SonarQube](https://sonarcloud.io/dashboard?id=mountebank&branch=master)
 
 There are several linting tools run locally as well:
@@ -293,12 +293,12 @@ is how I debug every test where it isn't immediately obvious why it's broken.
 I use IntelliJ to develop. I've found it convenient to set up the ability to run tests through the IDE,
 and use several configurations to run different types of tests:
 
-![Test configurations](https://raw.githubusercontent.com/bbyars/mountebank/master/images/Intellij-Configurations.png)
+![Test configurations](https://raw.githubusercontent.com/mountebank-testing/mountebank/master/images/Intellij-Configurations.png)
 
 The screenshot below shows how I've set up the ability to run unit and functional tests as part of
 what I've called the `all` configuration:
 
-![Configuration details](https://raw.githubusercontent.com/bbyars/mountebank/master/images/Intellij-Configuration-Details.png)
+![Configuration details](https://raw.githubusercontent.com/mountebank-testing/mountebank/master/images/Intellij-Configuration-Details.png)
 
 That configuration assumes mountebank is running in a separate process. I also have a configuration that removes the
 functional tests from the 'Application Parameters' line, which runs the unit tests without any expectation of
@@ -309,7 +309,7 @@ I use [nvm](https://github.com/creationix/nvm) to install different versions of 
 
 ### The Continuous Integration Pipeline
 
-The pipeline is orchestrated in [CircleCI](https://app.circleci.com/pipelines/github/bbyars/mountebank)
+The pipeline is orchestrated in [CircleCI](https://app.circleci.com/pipelines/github/mountebank-testing/mountebank)
 
 Every successful build that isn't a pull request deploys to a [test site](http://mountebank-dev.herokuapp.com/)
 and a beta version of the npm and Docker image.
