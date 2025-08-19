@@ -4,13 +4,13 @@ Congratulations! You're here because you want to join the millions of open sourc
 contributing to mountebank. The good news is that contributing is an easy process. In fact, you can
 make a difference without writing a single line of code. I am grateful for all of the following contributions:
 
-* Submitting an issue, either through github or the [support page](http://www.mbtest.org/support)
+* Submitting an issue, either through github or the [support page](http://www.mbtest.dev/support)
 * Commenting on existing issues
 * Answering questions in the [support forum](https://groups.google.com/forum/#!forum/mountebank-discuss)
 * Letting me know that you're using mountebank and how you're using it. It's surprisingly hard to find
 that out with open source projects, and provides healthy motivation. Feel free to email at
 brandon.byars@gmail.com
-* Writing about mountebank (bonus points if you link to the [home page](http://www.mbtest.org/))
+* Writing about mountebank (bonus points if you link to the [home page](http://www.mbtest.dev/))
 * Creating a how-to video about mountebank
 * Speaking about mountebank in conferences or meetups
 * Telling your friends about mountebank
@@ -24,7 +24,7 @@ pre-existing public writeup).
 
 Still want to write some code?  Great! You may want to keep the
 [source documentation](https://mountebank.firebaseapp.com/)
-handy, and you may want to review [the issues](https://github.com/bbyars/mountebank/issues).
+handy, and you may want to review [the issues](https://github.com/mountebank-testing/mountebank/issues).
 
 I have two high level goals for community contributions. First, I'd like contributing to be as fun
 as possible. Secondly, I'd like contributions to follow the design vision of mountebank.
@@ -48,7 +48,7 @@ expect more scrutiny for API changes, and don't be offended if I recommend some 
 agonize over the names in the API, and use tests to help me play with ideas.
 
 Before API changes can be released, the documentation and
-[contract page](http://www.mbtest.org/docs/api/contracts) need to be updated. The contract page
+[contract page](http://www.mbtest.dev/docs/api/contracts) need to be updated. The contract page
 is, I hope, friendly for users, but a bit unfriendly for maintainers. I'd love help fixing that.
 
 ### Protocol Agnosticism
@@ -101,6 +101,10 @@ the correct behavior under DNS failures. If your ISP is kind enough to hijack th
 in an attempt to allow you to conveniently peruse their advertising page, those tests will fail.
 Setting MB_AIRPLANE_MODE=true will ignore those tests.
 
+If you would like to develop in an isolated environment without needing to install Node, the repository includes a [`devcontainer.json`](https://github.com/mountebank-testing/mountebank/blob/master/.devcontainer/devcontainer.json) file.
+[Development Containers](https://containers.dev/) allow you to use a Docker container as your development environment.
+An easy way to make use of this is through the [VS Code Dev Containers Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
+
 When you're ready to commit, do the following
 
 * Look at your diffs! Many times accidental whitespace changes get included, adding noise
@@ -134,8 +138,8 @@ The pattern now is, where possible, to scope the `require` calls inside the func
 In the spirit of being as lazy as possible towards maintaining code quality, I rely on linting heavily.
 You are welcome to fix any tech debt that you see in SaaS dashboards:
 
-* [Code Climate](https://codeclimate.com/github/bbyars/mountebank)
-* [Codacy](https://app.codacy.com/gh/bbyars/mountebank/dashboard)
+* [Code Climate](https://codeclimate.com/github/mountebank-testing/mountebank)
+* [Codacy](https://app.codacy.com/gh/mountebank-testing/mountebank/dashboard)
 * [SonarQube](https://sonarcloud.io/dashboard?id=mountebank&branch=master)
 
 There are several linting tools run locally as well:
@@ -195,7 +199,7 @@ are usually also wrapped in a `pre` block if they are meant to be visible on the
 the response, wrap the response `code` block within an `assertResponse` code block.
 
 The simplest example is on the overview page, documenting the hypermedia on the root path of the API.
-You can see the [actual documentation](http://www.mbtest.org/docs/api/overview#get-home) on the website.
+You can see the [actual documentation](http://www.mbtest.dev/docs/api/overview#get-home) on the website.
 It makes a request to `GET /` and validates the response headers and JSON body:
 
 ````xml
@@ -235,9 +239,9 @@ with the `Date` header above
 * If you want to display something other than what's tested, you can use the `change` element
 * If you don't want to document the entire response to focus in on the key elements, you can set
 the `partial` attribute on the `assertResponse` element to `true`. The
-[proxies page](http://www.mbtest.org/docs/api/proxies) makes heavy use of this feature.
+[proxies page](http://www.mbtest.dev/docs/api/proxies) makes heavy use of this feature.
 
-You can see an example using the `change` element on the [getting started](http://www.mbtest.org/docs/gettingStarted)
+You can see an example using the `change` element on the [getting started](http://www.mbtest.dev/docs/gettingStarted)
 page. The docs indicate that the default port is 2525, and so it intentionally displays all the
 example requests with that port, even though it may use a different port during test execution:
 
@@ -252,10 +256,10 @@ The two examples just shown include two types of steps. The following are suppor
 
 * `http` is the most common one, representing HTTP requests and responses.
 * `exec` is used for command line executions like the one shown above
-* `smtp` is used for SMTP examples, as on the [mock verification](http://www.mbtest.org/docs/api/mocks) page.
+* `smtp` is used for SMTP examples, as on the [mock verification](http://www.mbtest.dev/docs/api/mocks) page.
 It expects a `port` attribute indicating the port of the imposter smtp service
 * `file` is used to create and delete a file, as on the lookup examples on the
-  [behavior](http://www.mbtest.org/docs/api/behaviors) page. It expects a `filename` attribute. If
+  [behavior](http://www.mbtest.dev/docs/api/behaviors) page. It expects a `filename` attribute. If
    the `delete` attribute is set to "true", the file is deleted.
 
 As the doc tests get unwieldy to work with at times, I will often comment out all files except the
@@ -289,12 +293,12 @@ is how I debug every test where it isn't immediately obvious why it's broken.
 I use IntelliJ to develop. I've found it convenient to set up the ability to run tests through the IDE,
 and use several configurations to run different types of tests:
 
-![Test configurations](https://raw.githubusercontent.com/bbyars/mountebank/master/images/Intellij-Configurations.png)
+![Test configurations](https://raw.githubusercontent.com/mountebank-testing/mountebank/master/images/Intellij-Configurations.png)
 
 The screenshot below shows how I've set up the ability to run unit and functional tests as part of
 what I've called the `all` configuration:
 
-![Configuration details](https://raw.githubusercontent.com/bbyars/mountebank/master/images/Intellij-Configuration-Details.png)
+![Configuration details](https://raw.githubusercontent.com/mountebank-testing/mountebank/master/images/Intellij-Configuration-Details.png)
 
 That configuration assumes mountebank is running in a separate process. I also have a configuration that removes the
 functional tests from the 'Application Parameters' line, which runs the unit tests without any expectation of
@@ -305,7 +309,7 @@ I use [nvm](https://github.com/creationix/nvm) to install different versions of 
 
 ### The Continuous Integration Pipeline
 
-The pipeline is orchestrated in [CircleCI](https://app.circleci.com/pipelines/github/bbyars/mountebank)
+The pipeline is orchestrated in [CircleCI](https://app.circleci.com/pipelines/github/mountebank-testing/mountebank)
 
 Every successful build that isn't a pull request deploys to a [test site](http://mountebank-dev.herokuapp.com/)
 and a beta version of the npm and Docker image.

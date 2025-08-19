@@ -103,7 +103,7 @@ describe('http proxy stubs', function () {
             port: proxy.port,
             path: '/',
             method: 'GET',
-            headers: { host: 'www.mbtest.org' }
+            headers: { host: 'www.mbtest.dev' }
         });
 
         assert.strictEqual(response.statusCode, 400);
@@ -161,7 +161,7 @@ describe('http proxy stubs', function () {
                     proxy: `https://localhost:${proxy.port}`
                 }),
                 headers: {
-                    'User-Agent': 'Mountebank Proxy Test <http://mbtest.org>'
+                    'User-Agent': 'Mountebank Proxy Test <http://www.mbtest.dev>'
                 }
             });
 

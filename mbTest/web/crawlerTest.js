@@ -41,7 +41,7 @@ describe('The mountebank website', function () {
         const response = await api.get('/sitemap'),
             siteLinks = Object.keys(crawlResults.hits)
                 .filter(link => isLocalLink(link) && link.indexOf('#') < 0 && link.indexOf('?') < 0)
-                .map(link => link.replace(api.url, 'http://www.mbtest.org')),
+                .map(link => link.replace(api.url, 'http://www.mbtest.dev')),
             linksNotInSitemap = siteLinks.filter(link => response.body.indexOf(link) < 0);
 
         assert.strictEqual(200, response.statusCode);

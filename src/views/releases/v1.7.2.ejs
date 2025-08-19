@@ -1,14 +1,14 @@
 <h1>v<%= releaseVersion %></h1>
 
 <p class='info-icon'>Be sure to keep up with the latest releases by subscribing to the
-    <a href='http://mbtest.org/feed'>ATOM feed</a>.</p>
+    <a href='http://www.mbtest.dev/feed'>ATOM feed</a>.</p>
 
 <p class='warning-icon'>mountebank v1.7 no longer supports node v0.10 or v0.12. This
     corresponds to the node community's <a href='https://github.com/nodejs/LTS#lts-schedule'>LTS schedule</a>.</p>
 
 <h2>Bug Fixes</h2>
 <ul class='bullet-list'>
-    <li>Fixed a <a href='https://github.com/bbyars/mountebank/issues/173'>bug</a> allowing state changes to the
+    <li>Fixed a <a href='https://github.com/mountebank-testing/mountebank/issues/173'>bug</a> allowing state changes to the
     "is" response after creation. This was first noticed when using the <code>decorate</code> behavior - the
     second and subsequent calls incorrectly returned whatever the first call used</li>
     <li>Correctly show the number of requests on the <a href='http://<%= host %>/imposters'>imposters</a> page</li>
