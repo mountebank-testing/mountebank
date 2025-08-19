@@ -2,7 +2,7 @@
 
 const fs = require('fs'),
     version = require('../../package.json').version,
-    dir = `docs/mountebank/${version}`,
+    dir = `docs/@mbtest/mountebank/${version}`,
     execSync = require('child_process').execSync;
 
 if (!fs.existsSync(dir)) {
