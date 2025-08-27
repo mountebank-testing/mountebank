@@ -48,7 +48,7 @@ const fs = require('fs-extra'),
             global: false
         },
         formatter: {
-            default: 'mountebank-formatters',
+            default: '@mbtest/mountebank-formatters',
             description: 'the custom formatter module to interpret --configfile formats and to use during mb save operations',
             nargs: 1,
             type: 'string',
