@@ -3,6 +3,7 @@
 const jsonPathPlus = require('jsonpath-plus'),
     helpers = require('../util/helpers.js');
 
+// jsonpath-plus v10 recommends using the options-object signature
 const { JSONPath } = jsonPathPlus;
 
 /**
@@ -21,8 +22,9 @@ function select (selector, possibleJSON, logger) {
     const isObject = helpers.isObject;
 
     try {
-        const json = isObject(possibleJSON) ? possibleJSON : JSON.parse(possibleJSON),
-            result = JSONPath(selector, json);
+        const json = isObject(possibleJSON) ? possibleJSON : JSON.parse(possibleJSON);
+        // Use options-object style for compatibility with newer jsonpath-plus
+        const result = JSONPath({ path: selector, json });
         if (typeof result === 'string') {
             return result;
         }
