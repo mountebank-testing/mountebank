@@ -40,7 +40,7 @@ and record-playback through proxying.
 
 ![how it works](https://github.com/mountebank-testing/mountebank/blob/master/src/public/images/overview.gif?raw=true)
 
-See [getting started](http://localhost:2525/docs/gettingStarted) guide for more information once you have it running locally.
+See [getting started](https://www.mbtest.dev/docs/gettingStarted) guide for more information.
 
 ## Install and Run
 
@@ -52,7 +52,7 @@ Run:
 
     mb
 
-There are a number of [command line options](http://localhost:2525/docs/commandLine) if you need
+There are a number of [command line options](https://www.mbtest.dev/docs/commandLine) if you need
 to customize mountebank.
 
 All pre-release versions of mountebank are available with the `beta` [npm tag](https://www.npmjs.com/package/mountebank).
@@ -60,7 +60,8 @@ No `beta` version is published unless it has passed all tests.
 
 ## Learn More
 
-After installing and running, view the docs in your browser at <http://localhost:2525>.
+After installing and running, view the docs in your browser at <http://localhost:2525>, or visit the
+[public site](https://www.mbtest.dev/).
 
 You can always learn more and support mountebank development by buying the book:
 
