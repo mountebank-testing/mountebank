@@ -92,7 +92,7 @@
     "snyk": "1.1297.3"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=19"
   },
   "snyk": true
 }
