@@ -82,7 +82,7 @@
     "eslint-plugin-node": "11.1.0",
     "firebase-tools": "13.6.1",
     "jsdoc": "4.0.4",
-    "jsdom": "24.0.0",
+    "jsdom": "26.1.0",
     "license-checker": "25.0.1",
     "mbTest": "file:./mbTest",
     "mocha": "10.2.0",
