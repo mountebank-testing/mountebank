@@ -88,7 +88,7 @@
     "mocha": "11.7.2",
     "mocha-multi-reporters": "1.5.1",
     "nc": "^1.0.3",
-    "nyc": "^15.1.0",
+    "nyc": "^17.1.0",
     "snyk": "1.1297.3"
   },
   "engines": {
