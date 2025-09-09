@@ -9,6 +9,7 @@ Pull requests are welcome, but don't expect anything to be merged until CI/CD in
 Many thanks goes to [Brandon Byars](https://github.com/bbyars) for all the effort building mountebank in the first place and maintaining the project for more than a decade and finally being helpfull and collaborative during this transition phase.
 
 # Welcome, friend
+Build status: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/mountebank-testing/mountebank/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mountebank-testing/mountebank/tree/master)
 
 mountebank is the only open source service virtualization tool that competes with the commercial offerings
 in terms of protocol diversity, capability, and performance. Here's what
