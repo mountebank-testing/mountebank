@@ -28,7 +28,7 @@
         "xpath": "0.0.34"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=21"
     },
     "files": [
         "api",
