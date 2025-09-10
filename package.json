@@ -65,7 +65,6 @@
     "https-proxy-agent": "7.0.2",
     "jsonpath-plus": "10.3.0",
     "mailparser": "3.6.7",
-    "@mbtest/mountebank-formatters": "0.0.2",
     "nodemailer": "6.9.9",
     "prom-client": "15.1.0",
     "proper-lockfile": "4.1.2",
@@ -90,6 +89,9 @@
     "nc": "^1.0.3",
     "nyc": "^17.1.0",
     "snyk": "1.1297.3"
+  },
+  "optionalDependencies": {
+    "@mbtest/mountebank-formatters": "0.0.2"
   },
   "engines": {
     "node": ">=18"
