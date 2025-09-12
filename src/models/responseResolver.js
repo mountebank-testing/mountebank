@@ -62,6 +62,7 @@ function create (stubs, proxy, callbackURL) {
             try {
                 const response = eval(injected);
                 if (helpers.defined(response)) {
+                    compatibility.upcastResponseEncoding(response);
                     done(response);
                 }
             }
