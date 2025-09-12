@@ -64,7 +64,7 @@
     "http-proxy-agent": "7.0.0",
     "https-proxy-agent": "7.0.2",
     "jsonpath-plus": "10.3.0",
-    "mailparser": "3.6.7",
+    "mailparser": "3.7.4",
     "@mbtest/mountebank-formatters": "0.0.2",
     "nodemailer": "6.9.9",
     "prom-client": "15.1.0",
