@@ -60,10 +60,10 @@ jobs:
             npm run test:cover
       - qlty/coverage_publish: # Upload coverage report to qlty.sh
           files: coverage/lcov.info
-      - run:
-          name: Upload coverage report to coveralls
-          command: |
-            cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
+      # - run:
+      #     name: Upload coverage report to coveralls
+      #     command: |
+      #       cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
 #      - run:
 #          name: Run sonar report
 #          command: |
