@@ -125,6 +125,14 @@ module.exports = function (createBaseServer) {
 
             try {
                 const simplifiedRequest = await httpRequest.createFrom(request);
+                let logMessage = `${clientName} => ${request.method} ${request.url}`;
+                
+                // Add request body to log if it exists
+                if (simplifiedRequest.body && Object.keys(simplifiedRequest.body).length > 0) {
+                    logMessage += ` body: ${JSON.stringify(simplifiedRequest.body)}`;
+                }
+                
+                logger.info(logMessage);
                 logger.debug('%s => %s', clientName, JSON.stringify(simplifiedRequest));
 
                 const mbResponse = await responseFn(simplifiedRequest, { rawUrl: request.url }),
