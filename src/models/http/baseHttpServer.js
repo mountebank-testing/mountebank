@@ -121,8 +121,6 @@ module.exports = function (createBaseServer) {
         server.on('request', async (request, response) => {
             const clientName = helpers.socketName(request.socket);
 
-            logger.info(`${clientName} => ${request.method} ${request.url}`);
-
             try {
                 const simplifiedRequest = await httpRequest.createFrom(request);
                 let logMessage = `${clientName} => ${request.method} ${request.url}`;
