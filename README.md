@@ -47,7 +47,7 @@ See [getting started](https://www.mbtest.dev/docs/gettingStarted) guide for more
 
 Install:
 
-    npm install -g mountebank
+    npm install -g @mbtest/mountebank
 
 Run:
 
