@@ -62,7 +62,7 @@
     "express": "5.1.0",
     "fs-extra": "11.2.0",
     "http-proxy-agent": "7.0.0",
-    "https-proxy-agent": "7.0.2",
+    "https-proxy-agent": "7.0.6",
     "jsonpath-plus": "10.3.0",
     "mailparser": "3.7.4",
     "nodemailer": "6.10.1",
