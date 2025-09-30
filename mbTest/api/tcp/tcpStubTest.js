@@ -82,15 +82,15 @@ describe('tcp imposter', function () {
 
         it('should return 400 if uses matches predicate with binary mode', async function () {
             const stub = {
-                    responses: [{ is: { data: 'dGVzdA==' } }],
-                    predicates: [{ matches: { data: 'dGVzdA==' } }]
+                    responses: [{ is: { bodyEncoding: null, body: 'dGVzdA==' } }],
+                    predicates: [{ matches: { bodyEncoding: null, body: 'dGVzdA==' } }]
                 },
-                request = { protocol: 'tcp', port, mode: 'binary', stubs: [stub] };
+                request = { protocol: 'tcp', port, stubs: [stub] };
 
             const response = await api.post('/imposters', request);
 
             assert.strictEqual(response.statusCode, 400, JSON.stringify(response.body, null, 4));
-            assert.strictEqual(response.body.errors[0].message, 'the matches predicate is not allowed in binary mode');
+            assert.strictEqual(response.body.errors[0].message, 'the matches predicate is not allowed for binary bodies');
         });
 
         it('should allow proxy stubs', async function () {

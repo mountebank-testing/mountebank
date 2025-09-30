@@ -48,7 +48,6 @@ async function create (Protocol, creationRequest, baseLogger, config, isAllowedC
 
     let stubs;
     let resolver;
-    let encoding;
     let numberOfRequests = 0;
 
     compatibility.upcast(creationRequest);
@@ -59,7 +58,7 @@ async function create (Protocol, creationRequest, baseLogger, config, isAllowedC
     async function findFirstMatch (request) {
         const filter = stubPredicates => {
                 return stubPredicates.every(predicate =>
-                    predicates.evaluate(predicate, request, encoding, logger, imposterState));
+                    predicates.evaluate(predicate, request, logger, imposterState));
             },
             observePredicateMatchDuration = metrics.predicateMatchDuration.startTimer(),
             match = await stubs.first(filter);
@@ -204,7 +203,6 @@ async function create (Protocol, creationRequest, baseLogger, config, isAllowedC
 
                 stubs = server.stubs;
                 resolver = server.resolver;
-                encoding = server.encoding;
 
                 function stop () {
                     return new Promise(closed => {
