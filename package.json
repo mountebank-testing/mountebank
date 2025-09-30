@@ -55,24 +55,23 @@
   "dependencies": {
     "@xmldom/xmldom": "0.8.10",
     "cors": "2.8.5",
-    "csv-parse": "5.5.3",
+    "csv-parse": "5.6.0",
     "ejs": "3.1.10",
     "errorhandler": "1.5.1",
     "escape-html": "1.0.3",
     "express": "5.1.0",
     "fs-extra": "11.2.0",
     "http-proxy-agent": "7.0.0",
-    "https-proxy-agent": "7.0.2",
+    "https-proxy-agent": "7.0.6",
     "jsonpath-plus": "10.3.0",
     "mailparser": "3.7.4",
-    "@mbtest/mountebank-formatters": "0.0.2",
     "nodemailer": "6.10.1",
     "prom-client": "15.1.0",
     "proper-lockfile": "4.1.2",
     "safe-regex": "^2.1.1",
     "safe-stable-stringify": "2.4.3",
     "smtp-server": "3.14.0",
-    "winston": "3.11.0",
+    "winston": "3.17.0",
     "xpath": "0.0.34",
     "yargs": "17.7.2"
   },
@@ -90,6 +89,9 @@
     "nc": "^1.0.3",
     "nyc": "^17.1.0",
     "snyk": "1.1297.3"
+  },
+  "optionalDependencies": {
+    "@mbtest/mountebank-formatters": "0.0.2"
   },
   "engines": {
     "node": ">=18"

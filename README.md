@@ -6,7 +6,7 @@ Work is being done to migrate and upgrade all CI/CD integrations from personal a
 
 Pull requests are welcome, but don't expect anything to be merged until CI/CD infrastucture is up and running.
 
-Many thanks goes to [Brandon Byars](https://github.com/bbyars) for all the effort building mountebank in the first place and maintaining the project for more than a decade and finally being helpfull and collaborative during this transition phase.
+Many thanks goes to [Brandon Byars](https://github.com/bbyars) for all the effort building mountebank in the first place, for maintaining the project for more than a decade, and finally, for being helpful and collaborative during this transition phase.
 
 # Welcome, friend
 Build status: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/mountebank-testing/mountebank/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/mountebank-testing/mountebank/tree/master)
@@ -47,7 +47,7 @@ See [getting started](https://www.mbtest.dev/docs/gettingStarted) guide for more
 
 Install:
 
-    npm install -g mountebank
+    npm install -g @mbtest/mountebank
 
 Run:
 
