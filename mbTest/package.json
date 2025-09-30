@@ -19,7 +19,7 @@
         "fs-extra": "11.2.0",
         "hpagent": "1.0.0",
         "jsdom": "26.1.0",
-        "mocha": "10.2.0",
+        "mocha": "11.0.1",
         "mocha-multi-reporters": "1.5.1",
         "mountebank": "file:..",
         "nc": "1.0.3",
