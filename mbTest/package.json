@@ -24,7 +24,7 @@
         "mountebank": "file:..",
         "nc": "1.0.3",
         "nodemailer": "7.0.6",
-        "safe-stable-stringify": "2.4.3",
+        "safe-stable-stringify": "2.5.0",
         "xpath": "0.0.34"
     },
     "engines": {
