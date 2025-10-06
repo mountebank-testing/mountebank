@@ -17,7 +17,7 @@
         "@xmldom/xmldom": "0.8.10",
         "express": "5.1.0",
         "fs-extra": "11.2.0",
-        "hpagent": "1.0.0",
+        "hpagent": "1.2.0",
         "jsdom": "26.1.0",
         "mocha": "10.2.0",
         "mocha-multi-reporters": "1.5.1",
