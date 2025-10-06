@@ -16,7 +16,7 @@
     "dependencies": {
         "@xmldom/xmldom": "0.8.10",
         "express": "5.1.0",
-        "fs-extra": "11.2.0",
+        "fs-extra": "11.3.1",
         "hpagent": "1.0.0",
         "jsdom": "26.1.0",
         "mocha": "10.2.0",
