@@ -320,6 +320,7 @@ The deploy jobs rely on an NPM [granular access token](https://docs.npmjs.com/ab
 3. Generate a new access token.
   - Click "Generate New Token"
   - Enter a unique name (I suggest the package name for clarity)
+  - Check "Bypass two-factor authentication (2FA)" (see below for more info)
   - Under "Packages and Scopes" choose the "Read and write" permission
   - Select "Only select packages and scopes" and select the package that will be published with the token to scope it to that specific package
   - Set the expiration date to 90 days
@@ -331,6 +332,8 @@ The deploy jobs rely on an NPM [granular access token](https://docs.npmjs.com/ab
   - Click "Add environment variable"
   - Enter a name of `NPM_API_KEY` with the access token from step #3 as the value
 6. Find the latest `master` pipeline and re-run it. Confirm the deploy step is successful.
+
+Allowing the tokens to bypass 2FA is necessary in order to run the deploy jobs without manual intervention (entering an OTP). The more secure way to automate deployment is through ["Trusted publishing"](https://docs.npmjs.com/trusted-publishers) which uses OIDC, but unfortunately CircleCI is not a supported provider as of November 2025.
 
 ## Releasing mountebank
 
