@@ -5,7 +5,7 @@ description = 'Information about a specific mountebank imposter'
 
 <%- include('_header') -%>
 
-<h1><%= imposter.protocol %> Imposter on port <%= imposter.port %></h1>
+<h1><% if (imposter.name) { %><%= imposter.name %> - <% } %><%= imposter.protocol %> Imposter on port <%= imposter.port %></h1>
 
 <h2>Requests</h2>
 
