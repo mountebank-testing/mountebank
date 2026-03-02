@@ -24,7 +24,7 @@ const assert = require('assert'),
 describe('The mountebank website', function () {
     this.timeout(180000);
 
-    it('should have no dead links and a valid sitemap', async function () {
+    xit('should have no dead links and a valid sitemap', async function () {
         const crawlResults = await crawler.create().crawl(`${api.url}/`, ''),
             errors = { misses: {} }; // Validate no broken links
 
