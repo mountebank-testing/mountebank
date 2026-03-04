@@ -7,7 +7,7 @@ const JSDOM = require('jsdom').JSDOM,
     whitelistPatterns = [
         'https://s3.amazonaws.com',
         '^#',
-        'http://www.mbtest.dev/feed',
+        'https://www.mbtest.dev/feed',
         'https://medium.com/capital-one-developers/moving-one-of-capital-ones-largest-customer-facing-apps-to-aws-668d797af6fc'
     ];
 

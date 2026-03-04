@@ -66,10 +66,10 @@ function nodeValue (node) {
  * @returns {Object}
  */
 function select (selector, ns, possibleXML, logger) {
-    const DOMParser = xmlDom.DOMParser,
+    const warn = (logger || {}).warn || (() => {}),
+        DOMParser = xmlDom.DOMParser,
         parser = new DOMParser({
             onError: (level, message) => {
-                const warn = (logger || {}).warn || (() => {});
                 warn('%s (source: %s)', message, JSON.stringify(possibleXML));
             }
         });
@@ -80,6 +80,7 @@ function select (selector, ns, possibleXML, logger) {
     }
     catch (e) {
         // Invalid XML, return undefined to indicate no match
+        warn('XML parsing error: %s (source: %s)', e.message, JSON.stringify(possibleXML));
         return undefined;
     }
 
