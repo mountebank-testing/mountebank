@@ -66,7 +66,7 @@ function nodeValue (node) {
  * @returns {Object}
  */
 function select (selector, ns, possibleXML, logger) {
-    const warn = (logger || {}).warn || (() => {}),
+    const warn = logger?.warn || (() => {}),
         DOMParser = xmlDom.DOMParser,
         parser = new DOMParser({
             onError: (level, message) => {
