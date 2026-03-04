@@ -35,7 +35,8 @@ async function packageMbTest () {
     await distPackage('mbTest', 'test', pkg => {
         pkg.dependencies.mountebank = 'file:../mountebank';
         const lockfile = JSON.parse(fs.readFileSync('dist/test/package-lock.json'));
-        lockfile.dependencies.mountebank.version = 'file:../mountebank';
+        lockfile.packages['../mountebank'] = lockfile.packages['..'];
+        delete lockfile.packages['..'];
         fs.writeFileSync('dist/test/package-lock.json', JSON.stringify(lockfile, null, 2));
     });
 }
