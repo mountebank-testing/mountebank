@@ -34,18 +34,32 @@ async function packageMountebank () {
 async function packageMbTest () {
     await distPackage('mbTest', 'test', pkg => {
         /*
-         * 1. Update the lockfile to reflect the new dependency reference
-         * 2. Update root dependency reference to point to '../mountebank' instead of '..'
-         * 3. Update the package entry key for mountebank to match the new path '../mountebank' instead of '..'
-         * 4. Remove the old package entry for '..' since it's no longer valid
-         * 5. Update the package-lock.json file with the modified lockfile content
+         * Update the mountebank dependency path from 'file:..' to 'file:../mountebank'
+         * In v3 lockfile format:
+         * 1. Update root package's dependency reference
+         * 2. Rename the mountebank package entry from '..' to '../mountebank'
+         * 3. Remove ALL other '../*' entries (these are parent's node_modules that shouldn't be here)
          */
         pkg.dependencies.mountebank = 'file:../mountebank';
 
         const lockfile = JSON.parse(fs.readFileSync('dist/test/package-lock.json'));
+
+        // Update the root package's dependency reference
         lockfile.packages[''].dependencies.mountebank = 'file:../mountebank';
-        lockfile.packages['../mountebank'] = lockfile.packages['..'];
-        delete lockfile.packages['..'];
+
+        // Save the mountebank package entry before we delete it
+        const mountebankPackage = lockfile.packages['..'];
+
+        // Remove all package entries that start with '../' (including '..' and '../node_modules/*')
+        // These are from the parent directory and shouldn't be in the test package lockfile
+        Object.keys(lockfile.packages).forEach(key => {
+            if (key.startsWith('../')) {
+                delete lockfile.packages[key];
+            }
+        });
+
+        // Re-add only the mountebank package entry with the corrected path
+        lockfile.packages['../mountebank'] = mountebankPackage;
 
         fs.writeFileSync('dist/test/package-lock.json', JSON.stringify(lockfile, null, 2));
     });
