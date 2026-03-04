@@ -223,7 +223,7 @@ describe('behaviors', function () {
                 actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.deepEqual(actualResponse, { data: 'Hello, ${you}' });
-            logger.warn.assertLogged('[xmldom error]\tinvalid doc source\n@#[line:undefined,col:undefined] (source: "")');
+            logger.warn.assertLogged('missing root element (source: "")');
         });
 
         it('should support replacing token with xml attribute', async function () {
