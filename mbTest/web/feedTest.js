@@ -8,13 +8,13 @@ const assert = require('assert'),
     timeout = parseInt(process.env.MB_SLOW_TEST_TIMEOUT || 3000);
 
 function entryCount (body) {
-    const doc = new DOMParser().parseFromString(body),
+    const doc = new DOMParser().parseFromString(body, 'text/xml'),
         select = xpath.useNamespaces({ atom: 'http://www.w3.org/2005/Atom' });
     return select('count(//atom:entry)', doc);
 }
 
 function getNextLink (body) {
-    const doc = new DOMParser().parseFromString(body),
+    const doc = new DOMParser().parseFromString(body, 'text/xml'),
         select = xpath.useNamespaces({ atom: 'http://www.w3.org/2005/Atom' });
     return select('//atom:link[@rel="next"]/@href', doc)[0].value;
 }
