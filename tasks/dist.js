@@ -33,10 +33,20 @@ async function packageMountebank () {
 
 async function packageMbTest () {
     await distPackage('mbTest', 'test', pkg => {
+        /*
+         * 1. Update the lockfile to reflect the new dependency reference
+         * 2. Update root dependency reference to point to '../mountebank' instead of '..'
+         * 3. Update the package entry key for mountebank to match the new path '../mountebank' instead of '..'
+         * 4. Remove the old package entry for '..' since it's no longer valid
+         * 5. Update the package-lock.json file with the modified lockfile content
+         */
         pkg.dependencies.mountebank = 'file:../mountebank';
+
         const lockfile = JSON.parse(fs.readFileSync('dist/test/package-lock.json'));
+        lockfile.packages[''].dependencies.mountebank = 'file:../mountebank';
         lockfile.packages['../mountebank'] = lockfile.packages['..'];
         delete lockfile.packages['..'];
+
         fs.writeFileSync('dist/test/package-lock.json', JSON.stringify(lockfile, null, 2));
     });
 }
