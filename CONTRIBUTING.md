@@ -344,12 +344,12 @@ of the heavy lifting.
 * Review major / minor version.
 * Update the releases.json with the latest release
 * Add `views/releases/vx.x.x` with the release notes. Make sure to use absolute URLs so they work in aggregators, etc
-* Make sure all contributors have been added to `package.json`
 * commit
 * push
 * wait for the build to pass
 * `git tag -a vXX.YY.ZZ -m 'vXX.YY.ZZ release'`
 * `git push --tags`
+* Add Github release pointing to the new tag with the release notes
 * update version in package.json to avoid accidental version overwrite for next version
 
 ## Getting Help
