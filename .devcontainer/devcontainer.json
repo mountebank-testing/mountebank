@@ -1,8 +1,8 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
 {
-	"name": "Mountebank - Node.js 18",
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-18-bookworm"
+	"name": "Mountebank - Node.js 24",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:24"
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
