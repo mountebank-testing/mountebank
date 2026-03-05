@@ -106,15 +106,8 @@ describe('--host', function () {
         assert.strictEqual(responses[0].is.body, 'ORIGIN');
     });
 
-    it('should disallow localhost calls when bound to specific host', async function () {
-        const os = require('os');
-        const dns = require('node:dns').promises;
-
-        // Log diagnostic information about the environment
-        console.log('\n=== Network Environment Diagnostics ===');
+    async function logHostnameInfo (dns) {
         console.log(`Hostname: ${hostname}`);
-
-        // Check what hostname resolves to
         try {
             const resolved = await dns.lookup(hostname);
             console.log(`Hostname resolves to: ${resolved.address} (${resolved.family === 4 ? 'IPv4' : 'IPv6'})`);
@@ -122,36 +115,46 @@ describe('--host', function () {
         catch (error) {
             console.log(`Hostname resolution failed: ${error.code}`);
         }
+    }
 
-        // List all network interfaces
+    function logNetworkInterfaces (interfaces) {
         console.log('\nAvailable network interfaces:');
-        const interfaces = os.networkInterfaces();
-        for (const [name, addrs] of Object.entries(interfaces)) {
-            console.log(`  ${name}:`);
-            for (const addr of addrs) {
+        Object.entries(interfaces).forEach(([interfaceName, addrs]) => {
+            console.log(`  ${interfaceName}:`);
+            addrs.forEach(addr => {
                 const type = addr.internal ? 'internal' : 'external';
                 console.log(`    - ${addr.address} (${addr.family}, ${type})`);
-            }
-        }
+            });
+        });
+    }
 
-        // Try to find hostnames for network IPs
+    async function logReverseDnsLookups (interfaces, dns) {
         console.log('\nAttempting reverse DNS lookups for network IPs:');
-        for (const [name, addrs] of Object.entries(interfaces)) {
-            for (const addr of addrs) {
-                if (addr.family === 'IPv4' && !addr.internal) {
-                    try {
-                        const hostnames = await dns.reverse(addr.address);
-                        console.log(`  ${addr.address} → ${hostnames.join(', ')}`);
-                    }
-                    catch (error) {
-                        console.log(`  ${addr.address} → no hostname (${error.code})`);
-                    }
-                }
+        const allAddrs = Object.values(interfaces).flat();
+        const externalIPv4Addrs = allAddrs.filter(addr => addr.family === 'IPv4' && !addr.internal);
+
+        for (const addr of externalIPv4Addrs) {
+            try {
+                const hostnames = await dns.reverse(addr.address);
+                console.log(`  ${addr.address} → ${hostnames.join(', ')}`);
+            }
+            catch (error) {
+                console.log(`  ${addr.address} → no hostname (${error.code})`);
             }
         }
+    }
+
+    it('should disallow localhost calls when bound to specific host', async function () {
+        const os = require('os');
+        const dns = require('node:dns').promises;
+        const interfaces = os.networkInterfaces();
+
+        console.log('\n=== Network Environment Diagnostics ===');
+        await logHostnameInfo(dns);
+        logNetworkInterfaces(interfaces);
+        await logReverseDnsLookups(interfaces, dns);
         console.log('=====================================\n');
 
-        // Original test logic - for now just skip
         console.log('Skipping test until we analyze diagnostic output');
     });
 
