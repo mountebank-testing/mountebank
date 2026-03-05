@@ -95,8 +95,12 @@ jobs:
       - MB_SLOW_TEST_TIMEOUT: 10000
     steps:
       - checkout
-      - run: choco install nodejs --version=18.11.0 -y
       - run: choco install wget -y
+      - run:
+          name: Install and use Node.js 18.11.0 with pre-installed nvm
+          command: |
+            nvm install 18.11.0
+            nvm use 18.11.0
       - run:
           name: Verify versions
           command: |
