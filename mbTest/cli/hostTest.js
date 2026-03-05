@@ -108,8 +108,8 @@ describe('--host', function () {
 
     it('should disallow localhost calls when bound to specific host', async function () {
         // Add diagnostic logging to understand the environment
-        const dns = require('dns').promises;
-        console.log(`\n=== Diagnostic Info ===`);
+        const dns = require('node:dns').promises;
+        console.log('\n=== Diagnostic Info ===');
         console.log(`Hostname: ${hostname}`);
 
         try {
@@ -120,7 +120,7 @@ describe('--host', function () {
         catch (error) {
             console.log(`Hostname does not resolve: ${error.code}`);
         }
-        console.log(`======================\n`);
+        console.log('======================\n');
 
         await mb.start(['--host', hostname]);
 
