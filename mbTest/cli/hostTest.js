@@ -107,6 +107,21 @@ describe('--host', function () {
     });
 
     it('should disallow localhost calls when bound to specific host', async function () {
+        // Add diagnostic logging to understand the environment
+        const dns = require('node:dns').promises;
+        console.log('\n=== Diagnostic Info ===');
+        console.log(`Hostname: ${hostname}`);
+
+        try {
+            const resolved = await dns.lookup(hostname);
+            console.log(`Hostname resolves to: ${resolved.address} (family: ${resolved.family})`);
+            console.log(`Hostname is localhost: ${resolved.address === '127.0.0.1' || resolved.address === '::1'}`);
+        }
+        catch (error) {
+            console.log(`Hostname does not resolve: ${error.code}`);
+        }
+        console.log('======================\n');
+
         await mb.start(['--host', hostname]);
 
         try {
