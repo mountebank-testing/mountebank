@@ -4,7 +4,12 @@ const JSDOM = require('jsdom').JSDOM,
     api = require('../api').create(),
     httpClient = require('../baseHttpClient').create('http'),
     httpsClient = require('../baseHttpClient').create('https'),
-    whitelistPatterns = ['https://s3.amazonaws.com', '^#', 'http://www.mbtest.dev/feed'];
+    whitelistPatterns = [
+        'https://s3.amazonaws.com',
+        '^#',
+        'https://www.mbtest.dev/feed',
+        'https://medium.com/capital-one-developers/moving-one-of-capital-ones-largest-customer-facing-apps-to-aws-668d797af6fc'
+    ];
 
 function isProtocolAgnostic (href) {
     return href.indexOf('//') === 0;

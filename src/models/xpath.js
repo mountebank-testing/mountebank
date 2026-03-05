@@ -66,15 +66,25 @@ function nodeValue (node) {
  * @returns {Object}
  */
 function select (selector, ns, possibleXML, logger) {
-    const DOMParser = xmlDom.DOMParser,
+    const warn = logger?.warn || (() => {}),
+        DOMParser = xmlDom.DOMParser,
         parser = new DOMParser({
-            errorHandler: (level, message) => {
-                const warn = (logger || {}).warn || (() => {});
+            onError: (level, message) => {
                 warn('%s (source: %s)', message, JSON.stringify(possibleXML));
             }
-        }),
-        doc = parser.parseFromString(possibleXML),
-        selectFn = xpath.useNamespaces(ns || {}),
+        });
+
+    let doc;
+    try {
+        doc = parser.parseFromString(possibleXML, 'text/xml');
+    }
+    catch (e) {
+        // Invalid XML, return undefined to indicate no match
+        warn('XML parsing error: %s (source: %s)', e.message, JSON.stringify(possibleXML));
+        return undefined;
+    }
+
+    const selectFn = xpath.useNamespaces(ns || {}),
         result = xpathSelect(selectFn, selector, doc);
     let nodeValues;
 

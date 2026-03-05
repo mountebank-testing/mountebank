@@ -60,10 +60,10 @@ jobs:
             npm run test:cover
       - qlty/coverage_publish: # Upload coverage report to qlty.sh
           files: coverage/lcov.info
-      - run:
-          name: Upload coverage report to coveralls
-          command: |
-            cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
+      # - run:
+      #     name: Upload coverage report to coveralls
+      #     command: |
+      #       cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
 #      - run:
 #          name: Run sonar report
 #          command: |
@@ -95,11 +95,10 @@ jobs:
       - MB_SLOW_TEST_TIMEOUT: 10000
     steps:
       - checkout
-      - run: choco install nvm --version=1.1.9 -y
       - run: choco install wget -y
       - run:
+          name: Install and use Node.js 20.20.1 with pre-installed nvm
           command: |
-            Start-Process powershell -verb runAs -Args "-start GeneralProfile"
             nvm install 20.20.1
             nvm use 20.20.1
       - run:
@@ -107,7 +106,6 @@ jobs:
           command: |
             node -v
             npm -v
-            nvm -v
       - run:
           name: Install Dependencies
           command: npm ci
@@ -122,7 +120,8 @@ jobs:
 
   mac:
     macos:
-      xcode: 14.0
+      xcode: 14.3.1
+    resource_class: m4pro.medium
     steps:
       - checkout
       - run:

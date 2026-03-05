@@ -1,6 +1,6 @@
 {
   "name": "@mbtest/mountebank",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "author": "Brandon Byars <brandon.byars@gmail.com>",
   "description": "Over the wire test doubles",
   "homepage": "http://www.mbtest.dev",
@@ -53,26 +53,25 @@
     "service virtualization"
   ],
   "dependencies": {
-    "@xmldom/xmldom": "0.8.10",
+    "@xmldom/xmldom": "0.9.8",
     "cors": "2.8.5",
-    "csv-parse": "5.5.3",
+    "csv-parse": "5.6.0",
     "ejs": "3.1.10",
     "errorhandler": "1.5.1",
     "escape-html": "1.0.3",
     "express": "5.1.0",
     "fs-extra": "11.2.0",
     "http-proxy-agent": "7.0.0",
-    "https-proxy-agent": "7.0.2",
+    "https-proxy-agent": "7.0.6",
     "jsonpath-plus": "10.3.0",
-    "mailparser": "3.6.7",
-    "@mbtest/mountebank-formatters": "0.0.2",
-    "nodemailer": "6.9.9",
+    "mailparser": "3.9.3",
+    "nodemailer": "7.0.11",
     "prom-client": "15.1.0",
     "proper-lockfile": "4.1.2",
     "safe-regex": "^2.1.1",
-    "safe-stable-stringify": "2.4.3",
-    "smtp-server": "3.13.2",
-    "winston": "3.11.0",
+    "safe-stable-stringify": "2.5.0",
+    "smtp-server": "3.14.0",
+    "winston": "3.17.0",
     "xpath": "0.0.34",
     "yargs": "17.7.2"
   },
@@ -85,11 +84,14 @@
     "jsdom": "26.1.0",
     "license-checker": "25.0.1",
     "mbTest": "file:./mbTest",
-    "mocha": "11.7.2",
+    "mocha": "10.8.2",
     "mocha-multi-reporters": "1.5.1",
     "nc": "^1.0.3",
     "nyc": "^17.1.0",
     "snyk": "1.1297.3"
+  },
+  "optionalDependencies": {
+    "@mbtest/mountebank-formatters": "0.0.2"
   },
   "engines": {
     "node": ">=20"
