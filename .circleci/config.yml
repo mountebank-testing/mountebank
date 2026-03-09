@@ -168,7 +168,7 @@ jobs:
           path: dist/test/testResults
 
   currentWithFileDB:
-    executor: node-current
+    executor: node-active # Current Node (25) is broken due to our usage of `require(...)`
     environment:
       - MB_PORT: 3535
       - MB_EXECUTABLE: /home/circleci/project/dist/mountebank/bin/mb
