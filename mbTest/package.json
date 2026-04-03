@@ -14,21 +14,21 @@
         "airplane": "MB_AIRPLANE_MODE=true npm test"
     },
     "dependencies": {
-        "@xmldom/xmldom": "0.8.10",
+        "@xmldom/xmldom": "0.9.8",
         "express": "5.1.0",
-        "fs-extra": "11.2.0",
-        "hpagent": "1.0.0",
+        "fs-extra": "11.3.1",
+        "hpagent": "1.2.0",
         "jsdom": "26.1.0",
-        "mocha": "10.2.0",
+        "mocha": "10.8.2",
         "mocha-multi-reporters": "1.5.1",
         "mountebank": "file:..",
         "nc": "1.0.3",
-        "nodemailer": "7.0.6",
-        "safe-stable-stringify": "2.4.3",
+        "nodemailer": "8.0.1",
+        "safe-stable-stringify": "2.5.0",
         "xpath": "0.0.34"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=20"
     },
     "files": [
         "api",

@@ -588,7 +588,7 @@ describe('filesystemBackedImpostersRepository', function () {
                         assert.deepEqual(err, {
                             code: 'corrupted database',
                             message: `invalid JSON in ${responsePath}`,
-                            details: 'Unexpected token C in JSON at position 0'
+                            details: 'Unexpected token \'C\', "CORRUPTED" is not valid JSON'
                         });
                     }
                 });

@@ -1,0 +1,31 @@
+<h1>v<%= releaseVersion %></h1>
+
+<p class='info-icon'>Be sure to keep up with the latest releases by subscribing to the
+    <a href='http://www.mbtest.dev/feed'>ATOM feed</a>.</p>
+
+<p>
+    This is the second release published under the new <a href='https://github.com/mountebank-testing/mountebank'>mountebank-testing</a> organization.
+    This is a community effort to continue the maintenance and development of mountebank going forward.
+    The package name has changed to <code>@mbtest/mountebank</code> to reflect this; please update your install commands accordingly.
+</p>
+
+<h2>Changes</h2>
+<p>This release mainly includes security updates:</p>
+<ul class='bullet-list'>
+    <li>Made <code>mountebank-formatters</code> dependency optional, allowing users to opt out if using a custom formatter</li>
+    <li>Security updates for multiple dependencies: <code>@xmldom/xmldom</code>, <code>mocha</code>, <code>winston</code>, <code>https-proxy-agent</code>, <code>csv-parse</code>, <code>fs-extra</code>, <code>hpagent</code>, <code>safe-stable-stringify</code>, <code>nodemailer</code>, <code>body-parser</code>, <code>node-forge</code>, <code>lodash</code>, <code>qs</code>, <code>basic-ftp</code>, and <code>minimatch</code></li>
+</ul>
+
+<h2>Contributors</h2>
+<p>Many thanks to the following kind folks for help with this release, either through bug reports,
+    suggestions, or direct code contributions:</p>
+
+<ul class='bullet-list'>
+    <li>Matthew Herman</li>
+    <li>Noah Green</li>
+    <li>Jarl Friis</li>
+</ul>
+
+<h2>Install</h2>
+
+<pre><code>npm install -g @mbtest/mountebank@<%= releaseVersion %></code></pre>

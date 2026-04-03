@@ -1,6 +1,6 @@
 {
   "name": "@mbtest/mountebank",
-  "version": "2.9.3",
+  "version": "2.9.4",
   "author": "Brandon Byars <brandon.byars@gmail.com>",
   "description": "Over the wire test doubles",
   "homepage": "http://www.mbtest.dev",
@@ -53,7 +53,7 @@
     "service virtualization"
   ],
   "dependencies": {
-    "@xmldom/xmldom": "0.8.10",
+    "@xmldom/xmldom": "0.9.8",
     "cors": "2.8.5",
     "csv-parse": "5.6.0",
     "ejs": "3.1.10",
@@ -64,13 +64,13 @@
     "http-proxy-agent": "7.0.0",
     "https-proxy-agent": "7.0.6",
     "jsonpath-plus": "10.3.0",
-    "mailparser": "3.7.4",
-    "nodemailer": "6.10.1",
+    "mailparser": "3.9.3",
+    "nodemailer": "8.0.1",
     "prom-client": "15.1.0",
     "proper-lockfile": "4.1.2",
     "safe-regex": "^2.1.1",
-    "safe-stable-stringify": "2.4.3",
-    "smtp-server": "3.14.0",
+    "safe-stable-stringify": "2.5.0",
+    "smtp-server": "3.18.1",
     "winston": "3.17.0",
     "xpath": "0.0.34",
     "yargs": "17.7.2"
@@ -79,12 +79,12 @@
     "coveralls": "3.1.1",
     "eslint": "8.56.0",
     "eslint-plugin-node": "11.1.0",
-    "firebase-tools": "13.6.1",
+    "firebase-tools": "15.9.0",
     "jsdoc": "4.0.4",
     "jsdom": "26.1.0",
     "license-checker": "25.0.1",
     "mbTest": "file:./mbTest",
-    "mocha": "10.2.0",
+    "mocha": "10.8.2",
     "mocha-multi-reporters": "1.5.1",
     "nc": "^1.0.3",
     "nyc": "^17.1.0",
@@ -94,7 +94,7 @@
     "@mbtest/mountebank-formatters": "0.0.2"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "snyk": true
 }
