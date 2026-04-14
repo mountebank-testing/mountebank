@@ -23,7 +23,7 @@
         "mocha-multi-reporters": "1.5.1",
         "mountebank": "file:..",
         "nc": "1.0.3",
-        "nodemailer": "8.0.1",
+        "nodemailer": "8.0.5",
         "safe-stable-stringify": "2.5.0",
         "xpath": "0.0.34"
     },
