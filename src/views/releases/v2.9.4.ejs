@@ -1,0 +1,30 @@
+<h1>v<%= releaseVersion %></h1>
+
+<p class='info-icon'>Be sure to keep up with the latest releases by subscribing to the
+    <a href='http://www.mbtest.dev/feed'>ATOM feed</a>.</p>
+
+<h2>Changes</h2>
+<ul class='bullet-list'>
+    <li>Updated minimum Node.js version to 20 (maintenance LTS) and Docker image to Node 24 (active LTS)</li>
+    <li>Updated <code>nodemailer</code> to v8.0.5, <code>smtp-server</code> to v3.18.4,
+        and <code>mailparser</code> to v3.9.7</li>
+    <li>Security updates for multiple dependencies: <code>lodash</code>, <code>hono</code>,
+        <code>@hono/node-server</code>, <code>@xmldom/xmldom</code>, <code>basic-ftp</code>,
+        <code>flatted</code>, <code>picomatch</code>, <code>tar</code>,
+        and <code>brace-expansion</code></li>
+    <li>Fixed HTTPS documentation tests to generate valid certificates</li>
+</ul>
+
+<h2>Contributors</h2>
+<p>Many thanks to the following kind folks for help with this release, either through bug reports,
+    suggestions, or direct code contributions:</p>
+
+<ul class='bullet-list'>
+    <li>Bobby Philip</li>
+    <li>Jarl Friis</li>
+    <li>Matthew Herman</li>
+</ul>
+
+<h2>Install</h2>
+
+<pre><code>npm install -g @mbtest/mountebank@<%= releaseVersion %></code></pre>
