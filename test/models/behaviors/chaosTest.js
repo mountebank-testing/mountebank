@@ -1,6 +1,6 @@
 'use strict';
 
-const assert = require('assert'),
+const assert = require('node:assert'),
     behaviors = require('../../../src/models/behaviors'),
     Logger = require('../../fakes/fakeLogger');
 
@@ -21,8 +21,8 @@ describe('behaviors', function () {
             const request = { isDryRun: true },
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
-                config = { chaos: { errorRate: 1, errorStatusCode: 503 } },
-                actualResponse = await behaviors.execute(request, response, [config], logger);
+                config = { chaos: { errorRate: 1, errorStatusCode: 503 } };
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.deepEqual(actualResponse, { statusCode: 200, body: 'ok' });
         });
@@ -32,8 +32,8 @@ describe('behaviors', function () {
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
-                config = { chaos: {} },
-                actualResponse = await behaviors.execute(request, response, [config], logger);
+                config = { chaos: {} };
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.deepEqual(actualResponse, { statusCode: 200, body: 'ok' });
         });
@@ -43,8 +43,8 @@ describe('behaviors', function () {
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
-                config = { chaos: { errorRate: 1, errorStatusCode: 503 } },
-                actualResponse = await behaviors.execute(request, response, [config], logger);
+                config = { chaos: { errorRate: 1, errorStatusCode: 503 } };
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.strictEqual(actualResponse.statusCode, 503);
             assert.strictEqual(actualResponse.body, '');
@@ -55,8 +55,8 @@ describe('behaviors', function () {
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
-                config = { chaos: { errorRate: 1 } },
-                actualResponse = await behaviors.execute(request, response, [config], logger);
+                config = { chaos: { errorRate: 1 } };
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.strictEqual(actualResponse.statusCode, 500);
             assert.strictEqual(actualResponse.body, '');
@@ -67,8 +67,8 @@ describe('behaviors', function () {
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
-                config = { chaos: { errorRate: 0.5, errorStatusCode: 503 } },
-                actualResponse = await behaviors.execute(request, response, [config], logger);
+                config = { chaos: { errorRate: 0.5, errorStatusCode: 503 } };
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.deepEqual(actualResponse, { statusCode: 200, body: 'ok' });
         });
@@ -78,8 +78,8 @@ describe('behaviors', function () {
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
-                config = { chaos: { errorRate: 0, errorStatusCode: 503 } },
-                actualResponse = await behaviors.execute(request, response, [config], logger);
+                config = { chaos: { errorRate: 0, errorStatusCode: 503 } };
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
 
             assert.deepEqual(actualResponse, { statusCode: 200, body: 'ok' });
         });
@@ -95,9 +95,8 @@ describe('behaviors', function () {
                 logger = Logger.create(),
                 start = Date.now(),
                 config = { chaos: { latencyRate: 1, maxLatencyMs: 100 } };
-
-            const actualResponse = await behaviors.execute(request, response, [config], logger),
-                elapsed = Date.now() - start;
+            const actualResponse = await behaviors.execute(request, response, [config], logger);
+            const elapsed = Date.now() - start;
 
             assert.ok(elapsed >= 90, `expected latency >=90ms, got ${elapsed}ms`);
             assert.deepEqual(actualResponse, { statusCode: 200, body: 'ok' });
@@ -110,7 +109,6 @@ describe('behaviors', function () {
                 logger = Logger.create(),
                 start = Date.now(),
                 config = { chaos: { latencyRate: 1, maxLatencyMs: 0 } };
-
             await behaviors.execute(request, response, [config], logger);
             const elapsed = Date.now() - start;
 
@@ -121,7 +119,7 @@ describe('behaviors', function () {
             const errors = behaviors.validate([{ chaos: { errorRate: 'oops' } }]);
             assert.strictEqual(errors.length, 1);
             assert.strictEqual(errors[0].code, 'bad data');
-            assert.ok(errors[0].message.indexOf('errorRate') >= 0,
+            assert.ok(errors[0].message.includes('errorRate'),
                 `unexpected message: ${errors[0].message}`);
         });
 
@@ -129,7 +127,7 @@ describe('behaviors', function () {
             const errors = behaviors.validate([{ chaos: { maxLatencyMs: -1 } }]);
             assert.strictEqual(errors.length, 1);
             assert.strictEqual(errors[0].code, 'bad data');
-            assert.ok(errors[0].message.indexOf('maxLatencyMs') >= 0,
+            assert.ok(errors[0].message.includes('maxLatencyMs'),
                 `unexpected message: ${errors[0].message}`);
         });
 
