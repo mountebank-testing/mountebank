@@ -227,6 +227,9 @@ jobs:
           # OIDC token in NPM_ID_TOKEN for a short-lived publish token.
           command: |
             export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            # Temporary: logs npm's HTTP requests so we can see whether it attempts
+            # the token exchange. http rather than silly, which would log credentials.
+            export NPM_CONFIG_LOGLEVEL=http
             scripts/publishNpm
       - run:
           name: Publish Docker
