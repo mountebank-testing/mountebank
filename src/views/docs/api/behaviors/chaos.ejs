@@ -1,0 +1,65 @@
+<table>
+  <tr>
+    <th>Parameter</th>
+    <th>Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>errorRate</code></td>
+    <td>A number between 0 and 1</td>
+    <td>The probability that the response will be replaced with an error.
+    Defaults to 0 (no error injection).</td>
+  </tr>
+  <tr>
+    <td><code>errorStatusCode</code></td>
+    <td>A non-negative integer</td>
+    <td>The status code to return when injecting an error. Defaults to 500.</td>
+  </tr>
+  <tr>
+    <td><code>latencyRate</code></td>
+    <td>A number between 0 and 1</td>
+    <td>The probability that random latency will be added to the response.
+    Defaults to 0 (no latency injection).</td>
+  </tr>
+  <tr>
+    <td><code>maxLatencyMs</code></td>
+    <td>A non-negative integer</td>
+    <td>The maximum latency in milliseconds. When triggered, the injected latency
+    is a uniformly random value between 0 and this maximum.</td>
+  </tr>
+</table>
+
+<p>The <code>chaos</code> behavior probabilistically injects faults into a response,
+making it useful for resilience and chaos engineering tests. Error injection and
+latency injection are independent: you can enable either or both. Every other field
+is optional, defaulting to a behavior that does nothing.</p>
+
+<p>Here is a stub that returns a 503 on roughly 10% of calls and adds up to 1
+second of latency on roughly 5% of calls:</p>
+
+<pre><code>{
+  "responses": [
+    {
+      "is": { "statusCode": 200, "body": "ok" },
+      "behaviors": [
+        {
+          "chaos": {
+            "errorRate": 0.1,
+            "errorStatusCode": 503,
+            "latencyRate": 0.05,
+            "maxLatencyMs": 1000
+          }
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+<p>Since the behavior is non-deterministic by design, repeated calls against the
+same imposter will produce a mix of successful and faulty responses. This is the
+whole point: it lets you exercise retry logic, circuit breakers, and timeout
+handling in the system under test without standing up a separate fault-injection
+proxy.</p>
+
+<p>If both <code>errorRate</code> and <code>latencyRate</code> trigger on the same
+request, latency is added first and then the response is replaced with the error.</p>
