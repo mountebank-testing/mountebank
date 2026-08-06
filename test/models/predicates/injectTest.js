@@ -39,7 +39,7 @@ describe('predicates', function () {
                 request = {};
 
             try {
-                predicates.evaluate(predicate, request, 'utf8', logger);
+                predicates.evaluate(predicate, request, logger);
                 assert.fail('should have thrown exception');
             }
             catch (error) {
@@ -61,7 +61,7 @@ describe('predicates', function () {
                 },
                 predicate = { inject: fn.toString() },
                 request = { path: '/', method: 'GET' };
-            assert.ok(predicates.evaluate(predicate, request, 'utf8', mockedLogger, mockedImposterState));
+            assert.ok(predicates.evaluate(predicate, request, mockedLogger, mockedImposterState));
             assert.deepEqual(mockedImposterState, expectedImposterState);
         });
 

@@ -233,7 +233,7 @@ describe('imposter', function () {
                 protocol: 'test',
                 port: 3535,
                 recordRequests: false,
-                stubs: [{ responses: [{ is: { body: 'body' } }] }]
+                stubs: [{ responses: [{ is: { bodyEncoding: 'utf8', body: 'body' } }] }]
             });
         });
 
@@ -264,14 +264,14 @@ describe('imposter', function () {
             assert.deepEqual(json.stubs, [
                 {
                     responses: [
-                        { is: { body: 'first' } },
+                        { is: { bodyEncoding: 'utf8', body: 'first' } },
                         { inject: 'inject' }
                     ],
                     _links: { self: { href: '/imposters/3535/stubs/0' } }
                 },
                 {
                     responses: [
-                        { is: { body: 'second' } }
+                        { is: { bodyEncoding: 'utf8', body: 'second' } }
                     ],
                     _links: { self: { href: '/imposters/3535/stubs/1' } }
                 }
@@ -304,7 +304,7 @@ describe('imposter', function () {
             assert.deepEqual(json.stubs, [
                 {
                     responses: [
-                        { is: { body: 'first' } },
+                        { is: { bodyEncoding: 'utf8', body: 'first' } },
                         { inject: 'inject' }
                     ],
                     _links: { self: { href: '/imposters/3535/stubs/0' } }

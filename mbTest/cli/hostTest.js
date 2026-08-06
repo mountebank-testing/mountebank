@@ -86,7 +86,7 @@ describe('--host', function () {
         }
 
         const originServerPort = mb.port + 1,
-            originServerStub = { responses: [{ is: { body: 'ORIGIN' } }] },
+            originServerStub = { responses: [{ is: { headers: { 'Content-Type': 'text/plain' }, body: 'ORIGIN' } }] },
             originServerRequest = { protocol: 'http', port: originServerPort, stubs: [originServerStub] },
             proxyPort = mb.port + 2,
             proxyDefinition = { to: `http://${hostname}:${originServerPort}`, mode: 'proxyAlways' },

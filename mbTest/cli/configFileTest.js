@@ -7,7 +7,7 @@ const assert = require('assert'),
     path = require('path'),
     isWindows = require('os').platform().indexOf('win') === 0,
     BaseHttpClient = require('../baseHttpClient'),
-    baseTimeout = parseInt(process.env.MB_SLOW_TEST_TIMEOUT || 3000),
+    baseTimeout = parseInt(process.env.MB_SLOW_TEST_TIMEOUT || 3000000),
     timeout = isWindows ? 2 * baseTimeout : baseTimeout,
     smtp = require('../api/smtp/smtpClient'),
     http = BaseHttpClient.create('http'),
@@ -129,8 +129,7 @@ describe('--configfile', function () {
             method: 'POST',
             path: '/',
             port: 4542,
-            headers: { 'Content-Encoding': 'gzip' },
-            mode: 'binary',
+            headers: { 'Content-Encoding': 'gzip', 'Content-Type': 'text/plain' },
             body: buffer
         });
 

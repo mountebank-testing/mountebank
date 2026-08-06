@@ -63,10 +63,10 @@ function create (options) {
         return list.map(predicate).every(result => result);
     }
 
-    function findFirstMatch (stubRepository, request, encoding, logger) {
+    function findFirstMatch (stubRepository, request, logger) {
         const filter = stubPredicates => {
             return trueForAll(stubPredicates,
-                predicate => predicates.evaluate(predicate, request, encoding, logger, {}));
+                predicate => predicates.evaluate(predicate, request, logger, {}));
         };
 
         return stubRepository.first(filter);
@@ -93,14 +93,14 @@ function create (options) {
         }
     }
 
-    async function dryRunSingleRepo (stubRepository, encoding, dryRunLogger) {
-        const match = await findFirstMatch(stubRepository, options.testRequest, encoding, dryRunLogger),
+    async function dryRunSingleRepo (stubRepository, dryRunLogger) {
+        const match = await findFirstMatch(stubRepository, options.testRequest, dryRunLogger),
             responseConfig = await match.stub.nextResponse();
 
         return resolverFor(stubRepository).resolve(responseConfig, options.testRequest, dryRunLogger, {});
     }
 
-    async function dryRun (stub, encoding, logger) {
+    async function dryRun (stub, logger) {
         options.testRequest = options.testRequest || {};
         options.testRequest.isDryRun = true;
 
@@ -111,14 +111,14 @@ function create (options) {
                 error: logger.error
             },
             dryRunRepositories = await reposToTestFor(stub),
-            dryRuns = dryRunRepositories.map(stubRepository => dryRunSingleRepo(stubRepository, encoding, dryRunLogger));
+            dryRuns = dryRunRepositories.map(stubRepository => dryRunSingleRepo(stubRepository, dryRunLogger));
 
         return Promise.all(dryRuns);
     }
 
-    async function addDryRunErrors (stub, encoding, errors, logger) {
+    async function addDryRunErrors (stub, errors, logger) {
         try {
-            await dryRun(stub, encoding, logger);
+            await dryRun(stub, logger);
         }
         catch (reason) {
             reason.source = reason.source || JSON.stringify(stub);
@@ -199,7 +199,7 @@ function create (options) {
         });
     }
 
-    async function errorsForStub (stub, encoding, logger) {
+    async function errorsForStub (stub, logger) {
         const errors = [];
 
         if (!Array.isArray(stub.responses) || stub.responses.length === 0) {
@@ -215,7 +215,7 @@ function create (options) {
         if (errors.length === 0) {
             // no sense in dry-running if there are already problems;
             // it will just add noise to the errors
-            await addDryRunErrors(stub, encoding, errors, logger);
+            await addDryRunErrors(stub, errors, logger);
         }
 
         return errors;
@@ -242,8 +242,7 @@ function create (options) {
      */
     async function validate (request, logger) {
         const stubs = request.stubs || [],
-            encoding = request.mode === 'binary' ? 'base64' : 'utf8',
-            validations = stubs.map(stub => errorsForStub(stub, encoding, logger));
+            validations = stubs.map(stub => errorsForStub(stub, logger));
 
         validations.push(Promise.resolve(errorsForRequest(request)));
         if (typeof options.additionalValidation === 'function') {

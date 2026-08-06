@@ -15,6 +15,8 @@ describe('mb replay', function () {
                 state.count = state.count || 0;
                 state.count += 1;
                 return {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
                     body: `${state.count}. ${request.path}`
                 };
             },

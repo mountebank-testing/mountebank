@@ -25,10 +25,9 @@ module.exports = function (createBaseServer) {
                     statusCode: stubResponse.statusCode || defaultResponse.statusCode || 200,
                     headers: stubResponse.headers || defaultHeaders,
                     body: stubResponse.body || defaultResponse.body || '',
-                    _mode: stubResponse._mode || defaultResponse._mode || 'text'
+                    bodyEncoding: stubResponse.bodyEncoding || defaultResponse.bodyEncoding
                 },
                 responseHeaders = headersMap.of(response.headers),
-                encoding = response._mode === 'binary' ? 'base64' : 'utf8',
                 isObject = helpers.isObject;
 
             if (isObject(response.body)) {
@@ -50,7 +49,7 @@ module.exports = function (createBaseServer) {
                 }
             }
 
-            if (encoding === 'base64') {
+            if (!response.bodyEncoding) {
                 // ensure the base64 has no newlines or other non
                 // base64 chars that will cause the body to be garbled.
                 response.body = response.body.replace(/[^A-Za-z0-9=+/]+/g, '');
@@ -61,7 +60,7 @@ module.exports = function (createBaseServer) {
             }
 
             if (responseHeaders.has('Content-Length')) {
-                responseHeaders.set('Content-Length', Buffer.byteLength(response.body, encoding));
+                responseHeaders.set('Content-Length', Buffer.byteLength(response.body, response.bodyEncoding || 'base64'));
             }
 
             return response;
@@ -128,8 +127,7 @@ module.exports = function (createBaseServer) {
                 logger.debug('%s => %s', clientName, JSON.stringify(simplifiedRequest));
 
                 const mbResponse = await responseFn(simplifiedRequest, { rawUrl: request.url }),
-                    stubResponse = postProcess(mbResponse, simplifiedRequest),
-                    encoding = stubResponse._mode === 'binary' ? 'base64' : 'utf8';
+                    stubResponse = postProcess(mbResponse, simplifiedRequest);
 
                 if (mbResponse.blocked) {
                     request.socket.destroy();
@@ -141,7 +139,7 @@ module.exports = function (createBaseServer) {
                 }
 
                 response.writeHead(stubResponse.statusCode, stubResponse.headers);
-                response.end(stubResponse.body.toString(), encoding);
+                response.end(stubResponse.body.toString(), stubResponse.bodyEncoding || 'base64');
 
                 if (stubResponse) {
                     logger.debug('%s <= %s', clientName, JSON.stringify(stubResponse));
@@ -179,8 +177,7 @@ module.exports = function (createBaseServer) {
                             connections[socket].destroy();
                         });
                     },
-                    proxy: httpProxy.create(logger),
-                    encoding: 'utf8'
+                    proxy: httpProxy.create(logger)
                 });
             });
         });

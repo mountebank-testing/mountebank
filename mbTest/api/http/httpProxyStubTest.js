@@ -172,7 +172,7 @@ describe('http proxy stubs', function () {
         });
     }
 
-    ['application/octet-stream', 'audio/mpeg', 'audio/mp4', 'image/gif', 'image/jpeg', 'video/avi', 'video/mpeg'].forEach(mimeType => {
+    ['application/octet-stream', 'audio/mpeg', 'audio/mp4', 'image/gif', 'image/jpeg', 'video/avi', 'video/mpeg', ''].forEach(mimeType => {
         it(`should treat ${mimeType} as binary`, async function () {
             const buffer = Buffer.from([0, 1, 2, 3]),
                 origin = {
@@ -183,7 +183,7 @@ describe('http proxy stubs', function () {
                             is: {
                                 body: buffer.toString('base64'),
                                 headers: { 'content-type': mimeType },
-                                _mode: 'binary'
+                                bodyEncoding: null
                             }
                         }]
                     }]
@@ -298,6 +298,8 @@ describe('http proxy stubs', function () {
                 state.count = state.count || 0;
                 state.count += 1;
                 return {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
                     body: `${state.count}. ${request.path}`
                 };
             },
@@ -335,6 +337,8 @@ describe('http proxy stubs', function () {
                 state.count = state.count || 0;
                 state.count += 1;
                 return {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
                     body: `${state.count}. ${request.path}`
                 };
             },
@@ -378,6 +382,8 @@ describe('http proxy stubs', function () {
                 state.count = state.count || 0;
                 state.count += 1;
                 return {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
                     body: `${state.count}. ${JSON.stringify(request.query)}`
                 };
             },
@@ -417,6 +423,8 @@ describe('http proxy stubs', function () {
                 state.count = state.count || 0;
                 state.count += 1;
                 return {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
                     body: `${state.count}. ${JSON.stringify(request.query)}`
                 };
             },
@@ -452,7 +460,12 @@ describe('http proxy stubs', function () {
 
     it('should persist behaviors from origin server', async function () {
         const originServerPort = port + 1,
-            originServerStub = { responses: [{ is: { body: '${SALUTATION} ${NAME}' } }] },
+            originServerStub = { responses: [{
+                is: {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
+                    body: '${SALUTATION} ${NAME}'
+                } }] },
             originServerRequest = {
                 protocol: 'http',
                 port: originServerPort,
@@ -528,6 +541,8 @@ describe('http proxy stubs', function () {
                 state.count = state.count || 0;
                 state.count += 1;
                 return {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
                     body: `${state.count}. ${request.path}`
                 };
             },
@@ -580,10 +595,11 @@ describe('http proxy stubs', function () {
                                         headers: {
                                             Connection: 'close',
                                             Date: 'NOW',
+                                            'Content-Type': 'text/plain; charset=utf-8',
                                             'Transfer-Encoding': 'chunked'
                                         },
                                         body: '1. /first',
-                                        _mode: 'text'
+                                        bodyEncoding: 'utf8'
                                     }
                                 },
                                 {
@@ -592,10 +608,11 @@ describe('http proxy stubs', function () {
                                         headers: {
                                             Connection: 'close',
                                             Date: 'NOW',
+                                            'Content-Type': 'text/plain; charset=utf-8',
                                             'Transfer-Encoding': 'chunked'
                                         },
                                         body: '3. /first',
-                                        _mode: 'text'
+                                        bodyEncoding: 'utf8'
                                     }
                                 }
                             ]
@@ -615,10 +632,11 @@ describe('http proxy stubs', function () {
                                         headers: {
                                             Connection: 'close',
                                             Date: 'NOW',
+                                            'Content-Type': 'text/plain; charset=utf-8',
                                             'Transfer-Encoding': 'chunked'
                                         },
                                         body: '2. /second',
-                                        _mode: 'text'
+                                        bodyEncoding: 'utf8'
                                     }
                                 }
                             ]
@@ -636,7 +654,7 @@ describe('http proxy stubs', function () {
                 is: {
                     body: buffer.toString('base64'),
                     headers: { 'content-encoding': 'gzip' },
-                    _mode: 'binary'
+                    bodyEncoding: null
                 }
             },
             originServerStub = { responses: [originServerResponse] },
@@ -652,14 +670,19 @@ describe('http proxy stubs', function () {
         await api.createImposter(originServerRequest);
         await api.createImposter(proxyRequest);
 
-        const response = await client.responseFor({ method: 'GET', port, path: '/', mode: 'binary' });
+        const response = await client.responseFor({ method: 'GET', port, path: '/', responseEncoding: null });
 
-        assert.deepEqual(response.body.toJSON().data, [0, 1, 2, 3]);
+        assert.deepEqual(response.body, Buffer.from([0, 1, 2, 3]));
     });
 
     it('should persist decorated proxy responses and only run decorator once', async function () {
         const originServerPort = port + 1,
-            originServerStub = { responses: [{ is: { body: 'origin server' } }] },
+            originServerStub = { responses: [{
+                is: {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
+                    body: 'origin server'
+                } }] },
             originServerRequest = {
                 protocol: 'http',
                 port: originServerPort,
@@ -746,6 +769,7 @@ describe('http proxy stubs', function () {
                     encoding = 'content-length';
                 }
                 return {
+                    bodyEncoding: 'utf8',
                     body: `Encoding: ${encoding}`
                 };
             },
@@ -784,7 +808,11 @@ describe('http proxy stubs', function () {
 
     it('should add decorate behaviors to newly created response', async function () {
         const originServerPort = port + 1,
-            originServerStub = { responses: [{ is: { body: 'origin server' } }] },
+            originServerStub = { responses: [{
+                is: {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
+                    body: 'origin server' } }] },
             originServerRequest = {
                 protocol: 'http',
                 port: originServerPort,
@@ -818,11 +846,11 @@ describe('http proxy stubs', function () {
                 name: 'origin'
             },
             firstStaticStub = {
-                responses: [{ is: { body: 'first stub' } }],
-                predicates: [{ equals: { body: 'fail match so we fall through to proxy' } }]
+                responses: [{ is: { bodyEncoding: 'utf8', body: 'first stub' } }],
+                predicates: [{ equals: { bodyEncoding: 'utf8', body: 'fail match so we fall through to proxy' } }]
             },
             proxyStub = { responses: [{ proxy: { to: `http://localhost:${originServerPort}`, mode: 'proxyAlways' } }] },
-            secondStaticStub = { responses: [{ is: { body: 'second stub' } }] },
+            secondStaticStub = { responses: [{ is: { bodyEncoding: 'utf8', body: 'second stub' } }] },
             proxyRequest = {
                 protocol: 'http',
                 port,
@@ -880,7 +908,12 @@ describe('http proxy stubs', function () {
 
     it('should save JSON bodies as JSON instead of text (issue #656)', async function () {
         const originServerPort = port + 1,
-            originServerStub = { responses: [{ is: { body: { json: true } } }] },
+            originServerStub = { responses: [{
+                is: {
+                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }, // Tell the client (the proxy recorder) what kind of content.
+                    bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
+                    body: { json: true }
+                } }] },
             originServerRequest = {
                 protocol: 'http',
                 port: originServerPort,
