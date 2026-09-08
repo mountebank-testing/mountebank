@@ -314,26 +314,21 @@ The pipeline is orchestrated in [CircleCI](https://app.circleci.com/pipelines/gi
 Every successful build that isn't a pull request deploys to a [test site](http://mountebank-dev.herokuapp.com/)
 and a beta version of the npm and Docker image.
 
-The deploy jobs rely on an NPM [granular access token](https://docs.npmjs.com/about-access-tokens). Each package has its own token scoped to that specific package which is stored as a secret in CircleCI. These tokens will expire every 90 days and need to be renewed. To do so follow these instructions:
-1. Log into NPM and navigate to the "Access Tokens" page from your profile.
-2. Delete any expired access tokens.
-3. Generate a new access token.
-  - Click "Generate New Token"
-  - Enter a unique name (I suggest the package name for clarity)
-  - Check "Bypass two-factor authentication (2FA)" (see below for more info)
-  - Under "Packages and Scopes" choose the "Read and write" permission
-  - Select "Only select packages and scopes" and select the package that will be published with the token to scope it to that specific package
-  - Set the expiration date to 90 days
-  - Click "Generate token"
-  - Make sure you keep the generated token available since you will only be able to view it once
-4. Log into CircleCI and navigate to the project for the package you are deploying.
-5. Update the access token environment variable.
-  - Navigate to the project settings and click on "Environment Variables"
-  - Click "Add environment variable"
-  - Enter a name of `NPM_API_KEY` with the access token from step #3 as the value
-6. Find the latest `master` pipeline and re-run it. Confirm the deploy step is successful.
+The deploy jobs publish to npm using a ["trusted publisher"](https://docs.npmjs.com/trusted-publishers), which
+authenticates over OIDC instead of a long-lived access token. The `Publish npm` steps ask CircleCI for an OIDC token
+scoped to the `npm:registry.npmjs.org` audience, and the npm CLI exchanges it for a short-lived publish token. There is
+no npm token stored in CircleCI and nothing to rotate.
 
-Allowing the tokens to bypass 2FA is necessary in order to run the deploy jobs without manual intervention (entering an OTP). The more secure way to automate deployment is through ["Trusted publishing"](https://docs.npmjs.com/trusted-publishers) which uses OIDC, but unfortunately CircleCI is not a supported provider as of November 2025.
+Each package needs its trusted publisher configured once on npmjs.com. Under the package's Settings, choose
+"Trusted Publisher" and select CircleCI, then fill in:
+  - **Organization ID** - the UUID on the CircleCI Organization Settings Overview page
+  - **Project ID** - the UUID on the CircleCI Project Settings Overview page
+  - **Pipeline definition ID** - the UUID under Project Settings -> Project Setup
+  - **VCS origin** - e.g. `github.com/mountebank-testing/mountebank`
+  - **Allowed actions** - at minimum `npm publish`
+
+The values are case-sensitive and npm does not validate them when saving, so an `ENEEDAUTH` failure in the deploy job
+usually means one of the UUIDs is wrong. A package can only have one trusted publisher at a time.
 
 ## Releasing mountebank
 
