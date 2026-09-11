@@ -1,7 +1,9 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/"
+      - "/mbTest"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -21,4 +23,3 @@ updates:
         update-types:
           - "minor"
           - "patch"
-
