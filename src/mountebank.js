@@ -36,7 +36,8 @@ function applyDefaults (options) {
     // Minimal defaults to start bypassing the CLI (e.g. embedding in an express app)
     const defaults = {
         port: 2525,
-        ipWhitelist: ['*']
+        ipWhitelist: ['*'],
+        maxImposters: 10000
     };
     Object.keys(defaults).forEach(key => {
         options[key] = typeof options[key] === 'undefined' ? defaults[key] : options[key];
@@ -55,7 +56,7 @@ async function createApp (options) {
         protocols = protocolsModule.loadProtocols(options, baseURL, logger, isAllowedConnection, imposters),
         homeController = homeControllerModule.create(releases),
         impostersController = impostersControllerModule.create(
-            protocols, imposters, logger, options.allowInjection),
+            protocols, imposters, logger, options.allowInjection, options.maxImposters),
         imposterController = imposterControllerModule.create(
             protocols, imposters, logger, options.allowInjection),
         logfile = options.log.transports.file ? options.log.transports.file.path : false,

@@ -16,9 +16,10 @@ const exceptions = require('../util/errors.js'),
  * @param {Object} imposters - The imposters repository
  * @param {Object} logger - The logger
  * @param {Boolean} allowInjection - Whether injection is allowed or not
+ * @param {Number} maxImposters - The maximum number of imposters allowed to exist at once
  * @returns {{get, post, del, put}}
  */
-function create (protocols, imposters, logger, allowInjection) {
+function create (protocols, imposters, logger, allowInjection, maxImposters = 10000) {
     function isFlagFalse (query, key) {
         return !helpers.defined(query[key]) || query[key].toLowerCase() !== 'false';
     }
@@ -121,6 +122,14 @@ function create (protocols, imposters, logger, allowInjection) {
      */
     async function post (request, response) {
         logger.debug(requestDetails(request));
+
+        const currentCount = (await imposters.all()).length;
+        if (currentCount >= maxImposters) {
+            respondWithCreationError(response, exceptions.ResourceConflictError(
+                `Could not create imposter: the maximum number of imposters (${maxImposters}) has already been reached`));
+            return false;
+        }
+
         const validation = await validate(request.body),
             protocol = request.body.protocol;
 
