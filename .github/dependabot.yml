@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directories:
+      - "/"
+      - "/mbTest"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    cooldown:
+      default-days: 7
+      semver-major-days: 7
+      semver-minor-days: 7
+      semver-patch-days: 7
+    groups:
+      npm-minor-patch-version-updates:
+        applies-to: "version-updates"
+        update-types:
+          - "minor"
+          - "patch"
+      npm-minor-patch-security-updates:
+        applies-to: "security-updates"
+        update-types:
+          - "minor"
+          - "patch"
