@@ -1,5 +1,8 @@
 'use strict';
 
+// eslint-plugin-node's resolver predates package.json exports, so it can't see
+// nodemailer's ./lib/* subpaths, which map into dist/cjs as of v10
+// eslint-disable-next-line node/no-missing-require
 const SMTPConnection = require('nodemailer/lib/smtp-connection');
 
 function addressOf (email) {
