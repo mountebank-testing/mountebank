@@ -1,0 +1,41 @@
+<h1>v<%= releaseVersion %></h1>
+
+<p class='info-icon'>Be sure to keep up with the latest releases by subscribing to the
+    <a href='http://www.mbtest.dev/feed'>ATOM feed</a>.</p>
+
+<h2>Changes</h2>
+<p>This release contains security and dependency updates, along with improvements to the build and
+    release pipeline. There are no changes to the API.</p>
+
+<ul class='bullet-list'>
+    <li>Removed <code>nodemailer</code> from mountebank's runtime dependencies; it was only used by the
+        test suite. The <a href='http://www.mbtest.dev/docs/protocols/smtp'>smtp</a> imposter continues
+        to depend on <code>smtp-server</code> and <code>mailparser</code></li>
+    <li>Updated <code>csv-parse</code> to v7.0.2, used by the
+        <a href='http://www.mbtest.dev/docs/api/behaviors#behavior-lookup'><code>lookup</code> behavior</a></li>
+    <li>Updated <code>smtp-server</code> to v3.19.13, <code>mailparser</code> to v3.9.28, and
+        <code>winston</code> to v3.19.0</li>
+    <li>Security updates for multiple dependencies: <code>nodemailer</code>, <code>brace-expansion</code>,
+        <code>iconv-lite</code>, <code>html-to-text</code>, <code>htmlparser2</code>,
+        <code>linkify-it</code>, <code>cors</code>, <code>errorhandler</code>,
+        <code>jsonpath-plus</code>, and <code>prom-client</code></li>
+    <li>Added <a href='https://github.com/mountebank-testing/mountebank/blob/master/.github/dependabot.yml'>Dependabot
+        configuration</a> so dependency and security updates are picked up automatically</li>
+    <li>Hardened npm installs in CI against supply chain attacks</li>
+    <li>npm packages are now published using a
+        <a href='https://docs.npmjs.com/trusted-publishers'>trusted publisher</a>, which authenticates
+        over OIDC instead of a long-lived access token</li>
+</ul>
+
+<h2>Contributors</h2>
+<p>Many thanks to the following kind folks for help with this release, either through bug reports,
+    suggestions, or direct code contributions:</p>
+
+<ul class='bullet-list'>
+    <li>Igor Stepanenko</li>
+    <li>Matthew Herman</li>
+</ul>
+
+<h2>Install</h2>
+
+<pre><code>npm install -g @mbtest/mountebank@<%= releaseVersion %></code></pre>
