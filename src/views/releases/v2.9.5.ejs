@@ -19,6 +19,9 @@
         behavior is unchanged</li>
     <li>Updated <code>smtp-server</code> to v3.19.13, <code>mailparser</code> to v3.9.28, and
         <code>winston</code> to v3.19.0</li>
+    <li>Resolved denial of service advisories in <code>qs</code>, <code>body-parser</code>, and
+        <code>path-to-regexp</code>, which mountebank pulls in through <code>express</code>. These were
+        fixed by re-resolving the dependency tree; <code>express</code> itself is unchanged at v5.1.0</li>
     <li>Security updates for multiple dependencies: <code>nodemailer</code>, <code>brace-expansion</code>,
         <code>iconv-lite</code>, <code>html-to-text</code>, <code>htmlparser2</code>,
         <code>linkify-it</code>, <code>cors</code>, <code>errorhandler</code>,
