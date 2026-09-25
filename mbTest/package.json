@@ -19,10 +19,10 @@
         "fs-extra": "11.3.1",
         "hpagent": "1.2.0",
         "jsdom": "26.1.0",
-        "mocha": "10.8.2",
-        "mocha-multi-reporters": "1.5.1",
+        "mocha": "12.0.2",
+        "mocha-multi-reporters": "1.5.2",
         "mountebank": "file:..",
-        "nc": "1.0.3",
+        "nc": "1.1.2",
         "nodemailer": "10.0.10",
         "safe-stable-stringify": "2.5.0",
         "xpath": "0.0.34"
