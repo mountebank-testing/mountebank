@@ -107,10 +107,7 @@ jobs:
           command: npm ci
       - run:
           name: Test
-          command: |
-            npm run test:cover
-            npm run test:api
-            npm run test:cli
+          command: npm run test:ci
       - store_test_results:
           path: testResults
 
@@ -135,10 +132,7 @@ jobs:
           command: npm ci
       - run:
           name: Test
-          command: |
-            npm run test:cover
-            npm run test:api
-            npm run test:cli
+          command: npm run test:ci
       - store_test_results:
           path: testResults
 
