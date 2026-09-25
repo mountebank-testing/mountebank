@@ -13,6 +13,10 @@
         to depend on <code>smtp-server</code> and <code>mailparser</code></li>
     <li>Updated <code>csv-parse</code> to v7.0.2, used by the
         <a href='http://www.mbtest.dev/docs/api/behaviors#behavior-lookup'><code>lookup</code> behavior</a></li>
+    <li>Updated <code>@xmldom/xmldom</code> to v0.9.12, resolving a number of denial of service and
+        XML injection advisories. mountebank uses it to parse XML for
+        <a href='http://www.mbtest.dev/docs/api/xpath'>xpath</a> predicates and selectors; matching
+        behavior is unchanged</li>
     <li>Updated <code>smtp-server</code> to v3.19.13, <code>mailparser</code> to v3.9.28, and
         <code>winston</code> to v3.19.0</li>
     <li>Security updates for multiple dependencies: <code>nodemailer</code>, <code>brace-expansion</code>,
