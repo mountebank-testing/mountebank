@@ -1,6 +1,6 @@
 {
   "name": "@mbtest/mountebank",
-  "version": "2.9.5",
+  "version": "2.9.6",
   "author": "Brandon Byars <brandon.byars@gmail.com>",
   "description": "Over the wire test doubles",
   "homepage": "http://www.mbtest.dev",
@@ -22,12 +22,13 @@
     "lint": "eslint src/ tasks/ test/ mbTest/ bin/mb && node tasks/lints/licenseCheck.js && node tasks/lints/deadCheck.js && node tasks/lints/objectCheck.js",
     "test:api": "node tasks/mbtest.js api",
     "test:cli": "cd mbTest && npm run cli",
-    "test:unit": "mocha --forbid-only --forbid-pending --reporter mocha-multi-reporters --reporter-options configFile=test/config.json 'test/**/*.js'",
-    "test:cover": "nyc --reporter=lcov --reporter=text --include='src/**' --exclude='src/public/**' npm run test:unit",
+    "test:unit": "mocha --forbid-only --forbid-pending --reporter mocha-multi-reporters --reporter-options configFile=test/config.json \"test/**/*.js\"",
+    "test:cover": "nyc --reporter=lcov --reporter=text --include=\"src/**\" --exclude=\"src/public/**\" npm run test:unit",
     "test:js": "cd mbTest && npm run js",
     "test:perf": "cd mbTest && npm run perf",
     "test:web": "node tasks/mbtest.js web",
     "test": "npm run lint && npm run test:cover && npm run test:api && npm run test:cli && npm run test:js",
+    "test:ci": "npm run test:cover && npm run test:api && npm run test:cli",
     "airplane": "MB_AIRPLANE_MODE=true npm test"
   },
   "files": [
