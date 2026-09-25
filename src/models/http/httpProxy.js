@@ -8,6 +8,10 @@
 const https = require('https'),
     http = require('http'),
     queryString = require('querystring'),
+    // http-proxy-agent is ESM-only as of v8, and eslint-plugin-node's resolver predates
+    // package.json exports, so it looks only at main and can't find it. require() still
+    // works through Node's require(esm) support, which is why engines requires >=20.19
+    // eslint-disable-next-line node/no-missing-require
     HttpProxyAgent = require('http-proxy-agent'),
     HttpsProxyAgent = require('https-proxy-agent'),
     helpers = require('../../util/helpers.js'),
