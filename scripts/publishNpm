@@ -1,7 +1,10 @@
 #!/bin/sh
 
-if [ ! -f ~/.npmrc ] && [ -n "$NPM_API_KEY" ]; then
-    echo //registry.npmjs.org/:_authToken=$NPM_API_KEY > ~/.npmrc
+# Auth comes from an npm trusted publisher: the CI job sets NPM_ID_TOKEN to a
+# CircleCI OIDC token and npm exchanges it for a short-lived publish token.
+if [ -z "$NPM_ID_TOKEN" ]; then
+    echo "NPM_ID_TOKEN is not set; cannot authenticate to npm" >&2
+    exit 1
 fi
 
 TAG=beta

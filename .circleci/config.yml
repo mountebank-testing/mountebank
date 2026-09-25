@@ -8,7 +8,7 @@ executors:
       - MB_SLOW_TEST_TIMEOUT: 10000
   node-active:
     docker:
-      - image: cimg/node:24.14.0
+      - image: cimg/node:24.19.0
     environment:
       - MB_SLOW_TEST_TIMEOUT: 10000
   node-current:
@@ -60,10 +60,6 @@ jobs:
             npm run test:cover
       - qlty/coverage_publish: # Upload coverage report to qlty.sh
           files: coverage/lcov.info
-      # - run:
-      #     name: Upload coverage report to coveralls
-      #     command: |
-      #       cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js
 #      - run:
 #          name: Run sonar report
 #          command: |
@@ -111,10 +107,7 @@ jobs:
           command: npm ci
       - run:
           name: Test
-          command: |
-            npm run test:cover
-            npm run test:api
-            npm run test:cli
+          command: npm run test:ci
       - store_test_results:
           path: testResults
 
@@ -139,10 +132,7 @@ jobs:
           command: npm ci
       - run:
           name: Test
-          command: |
-            npm run test:cover
-            npm run test:api
-            npm run test:cli
+          command: npm run test:ci
       - store_test_results:
           path: testResults
 
@@ -223,7 +213,11 @@ jobs:
           at: .
       - run:
           name: Publish npm
-          command: scripts/publishNpm
+          # Authenticates via an npm trusted publisher; the npm CLI exchanges the
+          # OIDC token in NPM_ID_TOKEN for a short-lived publish token.
+          command: |
+            export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            scripts/publishNpm
       - run:
           name: Publish Docker
           command: |
@@ -251,7 +245,11 @@ jobs:
           command: node tasks/dist.js
       - run:
           name: Publish npm
-          command: scripts/publishNpm
+          # Authenticates via an npm trusted publisher; the npm CLI exchanges the
+          # OIDC token in NPM_ID_TOKEN for a short-lived publish token.
+          command: |
+            export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            scripts/publishNpm
       - run:
           name: Publish Docker
           command: |
