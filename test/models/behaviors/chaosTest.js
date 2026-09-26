@@ -74,7 +74,7 @@ describe('behaviors', function () {
         });
 
         it('should not inject error when errorRate is 0', async function () {
-            Math.random = () => 0;
+            Math.random = () => 0.5;
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
@@ -102,8 +102,25 @@ describe('behaviors', function () {
             assert.deepEqual(actualResponse, { statusCode: 200, body: 'ok' });
         });
 
+        it('should default maxLatencyMs to 1000 when not provided', async function () {
+            let calls = 0;
+            Math.random = () => {
+                calls += 1;
+                return calls === 1 ? 0 : 0.05;
+            };
+            const request = {},
+                response = { statusCode: 200, body: 'ok' },
+                logger = Logger.create(),
+                start = Date.now(),
+                config = { chaos: { latencyRate: 1 } };
+            await behaviors.execute(request, response, [config], logger);
+            const elapsed = Date.now() - start;
+
+            assert.ok(elapsed >= 40, `expected latency >=40ms, got ${elapsed}ms`);
+        });
+
         it('should skip latency when maxLatencyMs is 0', async function () {
-            Math.random = () => 0;
+            Math.random = () => 0.5;
             const request = {},
                 response = { statusCode: 200, body: 'ok' },
                 logger = Logger.create(),
@@ -120,6 +137,14 @@ describe('behaviors', function () {
             assert.strictEqual(errors.length, 1);
             assert.strictEqual(errors[0].code, 'bad data');
             assert.ok(errors[0].message.includes('errorRate'),
+                `unexpected message: ${errors[0].message}`);
+        });
+
+        it('should not be valid if latencyRate is not a number', function () {
+            const errors = behaviors.validate([{ chaos: { latencyRate: 'oops' } }]);
+            assert.strictEqual(errors.length, 1);
+            assert.strictEqual(errors[0].code, 'bad data');
+            assert.ok(errors[0].message.includes('latencyRate'),
                 `unexpected message: ${errors[0].message}`);
         });
 

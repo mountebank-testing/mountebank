@@ -533,7 +533,7 @@ async function lookup (originalRequest, response, lookupConfig, logger) {
 
 async function maybeInjectLatency (config, logger) {
     const latencyRate = config.latencyRate || 0,
-        maxLatencyMs = config.maxLatencyMs || 0;
+        maxLatencyMs = typeof config.maxLatencyMs === 'number' ? config.maxLatencyMs : 1000;
 
     if (latencyRate <= 0 || maxLatencyMs <= 0) {
         return;
