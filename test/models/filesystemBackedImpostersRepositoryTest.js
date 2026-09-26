@@ -17,8 +17,10 @@ describe('filesystemBackedImpostersRepository', function () {
         repo = Repo.create({ datadir: '.mbtest' }, logger);
     });
 
-    afterEach(function () {
-        fs.removeSync('.mbtest');
+    afterEach(async function () {
+        // Tests that assert on read failures leave a sibling read in flight, and Windows
+        // won't delete a directory while a handle is open, so retry instead of failing
+        await fs.rm('.mbtest', { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
     });
 
     function imposterize (config) {
