@@ -1,6 +1,7 @@
 'use strict';
 
 const stringify = require('safe-stable-stringify'),
+    buffer = require('buffer'),
     safeRegex = require('safe-regex'),
     jsonpath = require('./jsonpath.js'),
     helpers = require('../util/helpers.js'),
@@ -39,7 +40,7 @@ function forceStrings (value) {
     else if (Array.isArray(value)) {
         return value.map(forceStrings);
     }
-    else if (isObject(value)) {
+    else if (isObject(value) && !Buffer.isBuffer(value)) {
         return Object.keys(value).reduce((accumulator, key) => {
             accumulator[key] = forceStrings(value[key]);
             return accumulator;
@@ -53,11 +54,7 @@ function forceStrings (value) {
     }
 }
 
-function select (type, selectFn, encoding) {
-    if (encoding === 'base64') {
-        throw errors.ValidationError(`the ${type} predicate parameter is not allowed in binary mode`);
-    }
-
+function select (type, selectFn) {
     const nodeValues = selectFn();
 
     // Return either a string if one match or array if multiple
@@ -89,10 +86,10 @@ function transformObject (obj, transform) {
     return obj;
 }
 
-function selectXPath (config, encoding, text) {
+function selectXPath (config, text) {
     const selectFn = combinators.curry(xPath.select, config.selector, config.ns, text);
 
-    return orderIndependent(select('xpath', selectFn, encoding));
+    return orderIndependent(select('xpath', selectFn));
 }
 
 function selectTransform (config, options, logger) {
@@ -107,14 +104,14 @@ function selectTransform (config, options, logger) {
             cloned.jsonpath.selector = cloned.jsonpath.selector.toLowerCase();
         }
 
-        return combinators.curry(selectJSONPath, cloned.jsonpath, options.encoding, config, stringTransform, logger);
+        return combinators.curry(selectJSONPath, cloned.jsonpath, config, stringTransform, logger);
     }
     else if (config.xpath) {
         if (!cloned.caseSensitive) {
             cloned.xpath.ns = transformObject(cloned.xpath.ns || {}, lowercase);
             cloned.xpath.selector = cloned.xpath.selector.toLowerCase();
         }
-        return combinators.curry(selectXPath, cloned.xpath, options.encoding);
+        return combinators.curry(selectXPath, cloned.xpath);
     }
     else {
         return combinators.identity;
@@ -143,15 +140,6 @@ function exceptTransform (config, logger) {
     }
 }
 
-function encodingTransform (encoding) {
-    if (encoding === 'base64') {
-        return text => Buffer.from(text, 'base64').toString();
-    }
-    else {
-        return combinators.identity;
-    }
-}
-
 function tryJSON (value, predicateConfig, logger) {
     try {
         const keyCaseTransform = predicateConfig.keyCaseSensitive === false ? lowercase : caseTransform(predicateConfig),
@@ -167,11 +155,11 @@ function tryJSON (value, predicateConfig, logger) {
 }
 
 // eslint-disable-next-line max-params
-function selectJSONPath (config, encoding, predicateConfig, stringTransform, logger, text) {
+function selectJSONPath (config, predicateConfig, stringTransform, logger, text) {
     const possibleJSON = stringTransform(tryJSON(text, predicateConfig, logger)),
         selectFn = combinators.curry(jsonpath.select, config.selector, possibleJSON);
 
-    return orderIndependent(select('jsonpath', selectFn, encoding));
+    return orderIndependent(select('jsonpath', selectFn));
 }
 
 function transformAll (obj, keyTransforms, valueTransforms, arrayTransforms) {
@@ -181,7 +169,7 @@ function transformAll (obj, keyTransforms, valueTransforms, arrayTransforms) {
     if (Array.isArray(obj)) {
         return apply(arrayTransforms)(obj.map(element => transformAll(element, keyTransforms, valueTransforms, arrayTransforms)));
     }
-    else if (isObject(obj)) {
+    else if (isObject(obj) && !Buffer.isBuffer(obj)) {
         return Object.keys(obj).reduce((accumulator, key) => {
             accumulator[apply(keyTransforms)(key)] = transformAll(obj[key], keyTransforms, valueTransforms, arrayTransforms);
             return accumulator;
@@ -211,7 +199,17 @@ function normalize (obj, config, options, logger) {
 
     transforms.push(exceptTransform(config, logger));
     transforms.push(caseTransform(config));
-    transforms.push(encodingTransform(options.encoding));
+
+    obj = helpers.clone(obj);
+    if (options.binaryBody) {
+        if (obj.bodyEncoding) {
+            obj.body = Buffer.from(buffer.transcode(Buffer.from(obj.body), 'utf8', obj.bodyEncoding));
+        }
+        else {
+            obj.body = Buffer.from(obj.body, 'base64');
+        }
+    }
+    delete obj.bodyEncoding;
 
     // sort to provide deterministic comparison for deepEquals,
     // where the order in the array for multi-valued querystring keys
@@ -289,6 +287,9 @@ function predicateSatisfied (expected, actual, predicateConfig, predicateFn) {
             // in the actual array
             return expectedMatchesAtLeastOneValueInActualArray(expected, actual, predicateConfig, predicateFn);
         }
+        else if (Buffer.isBuffer(expected[fieldName])) {
+            return predicateFn(expected[fieldName], actual[fieldName]);
+        }
         else if (isObject(expected[fieldName])) {
             return predicateSatisfied(expected[fieldName], actual[fieldName], predicateConfig, predicateFn);
         }
@@ -299,30 +300,36 @@ function predicateSatisfied (expected, actual, predicateConfig, predicateFn) {
 }
 
 function create (operator, predicateFn) {
-    return (predicate, request, encoding, logger) => {
-        const expected = normalize(predicate[operator], predicate, { encoding: encoding }, logger),
-            actual = normalize(request, predicate, { encoding: encoding, withSelectors: true }, logger);
+    return (predicate, request, logger) => {
+        const binaryBody = typeof predicate[operator].body === 'string' && typeof request.body === 'string'
+                && (!predicate[operator].bodyEncoding || !request.bodyEncoding),
+            expected = normalize(predicate[operator], predicate, { binaryBody }, logger),
+            actual = normalize(request, predicate, { binaryBody, withSelectors: true }, logger);
 
         return predicateSatisfied(expected, actual, predicate, predicateFn);
     };
 }
 
-function deepEquals (predicate, request, encoding, logger) {
-    const expected = normalize(forceStrings(predicate.deepEquals), predicate, { encoding: encoding }, logger),
-        actual = normalize(forceStrings(request), predicate, { encoding: encoding, withSelectors: true, shouldForceStrings: true }, logger),
+function deepEquals (predicate, request, logger) {
+    const expected = normalize(forceStrings(predicate.deepEquals), predicate, { }, logger),
+        actual = normalize(forceStrings(request), predicate, { withSelectors: true, shouldForceStrings: true }, logger),
         isObject = helpers.isObject;
+
+    if (Buffer.isBuffer(predicate.deepEquals.body)) {
+        throw errors.ValidationError('The deepEquals does not make sense in binary body');
+    }
 
     return Object.keys(expected).every(fieldName => {
         // Support predicates that reach into fields encoded in JSON strings (e.g. HTTP bodies)
         if (isObject(expected[fieldName]) && typeof actual[fieldName] === 'string') {
             const possibleJSON = tryJSON(actual[fieldName], predicate);
-            actual[fieldName] = normalize(forceStrings(possibleJSON), predicate, { encoding: encoding }, logger);
+            actual[fieldName] = normalize(forceStrings(possibleJSON), predicate, { }, logger);
         }
         return stringify(expected[fieldName]) === stringify(actual[fieldName]);
     });
 }
 
-function matches (predicate, request, encoding, logger) {
+function matches (predicate, request, logger) {
     // We want to avoid the lowerCase transform on values so we don't accidentally butcher
     // a regular expression with upper case metacharacters like \W and \S
     // However, we need to maintain the case transform for keys like http header names (issue #169)
@@ -330,12 +337,12 @@ function matches (predicate, request, encoding, logger) {
     const caseSensitive = predicate.caseSensitive ? true : false, // convert to boolean even if undefined
         clone = helpers.merge(predicate, { caseSensitive: true, keyCaseSensitive: caseSensitive }),
         noexcept = helpers.merge(clone, { except: '' }),
-        expected = normalize(predicate.matches, noexcept, { encoding: encoding }, logger),
-        actual = normalize(request, clone, { encoding: encoding, withSelectors: true }, logger),
+        expected = normalize(predicate.matches, noexcept, { }, logger),
+        actual = normalize(request, clone, { withSelectors: true }, logger),
         options = caseSensitive ? '' : 'i';
 
-    if (encoding === 'base64') {
-        throw errors.ValidationError('the matches predicate is not allowed in binary mode');
+    if (predicate.matches.body && typeof predicate.matches.body === 'string' && !predicate.matches.bodyEncoding) {
+        throw errors.ValidationError('the matches predicate is not allowed for binary bodies');
     }
 
     return predicateSatisfied(expected, actual, clone, (a, b) => {
@@ -346,23 +353,23 @@ function matches (predicate, request, encoding, logger) {
     });
 }
 
-function not (predicate, request, encoding, logger, imposterState) {
-    return !evaluate(predicate.not, request, encoding, logger, imposterState);
+function not (predicate, request, logger, imposterState) {
+    return !evaluate(predicate.not, request, logger, imposterState);
 }
 
-function evaluateFn (request, encoding, logger, imposterState) {
-    return subPredicate => evaluate(subPredicate, request, encoding, logger, imposterState);
+function evaluateFn (request, logger, imposterState) {
+    return subPredicate => evaluate(subPredicate, request, logger, imposterState);
 }
 
-function or (predicate, request, encoding, logger, imposterState) {
-    return predicate.or.some(evaluateFn(request, encoding, logger, imposterState));
+function or (predicate, request, logger, imposterState) {
+    return predicate.or.some(evaluateFn(request, logger, imposterState));
 }
 
-function and (predicate, request, encoding, logger, imposterState) {
-    return predicate.and.every(evaluateFn(request, encoding, logger, imposterState));
+function and (predicate, request, logger, imposterState) {
+    return predicate.and.every(evaluateFn(request, logger, imposterState));
 }
 
-function inject (predicate, request, encoding, logger, imposterState) {
+function inject (predicate, request, logger, imposterState) {
     if (request.isDryRun === true) {
         return true;
     }
@@ -399,7 +406,7 @@ function toString (value) {
 }
 
 const predicates = {
-    equals: create('equals', (expected, actual) => toString(expected) === toString(actual)),
+    equals: create('equals', (expected, actual) => (Buffer.isBuffer(expected) ? expected.equals(actual) : toString(expected) === toString(actual))),
     deepEquals,
     contains: create('contains', (expected, actual) => actual.indexOf(expected) >= 0),
     startsWith: create('startsWith', (expected, actual) => actual.indexOf(expected) === 0),
@@ -418,17 +425,16 @@ const predicates = {
  * Resolves all predicate keys in given predicate
  * @param {Object} predicate - The predicate configuration
  * @param {Object} request - The protocol request object
- * @param {string} encoding - utf8 or base64
  * @param {Object} logger - The logger, useful for debugging purposes
  * @param {Object} imposterState - The current state for the imposter
  * @returns {boolean}
  */
-function evaluate (predicate, request, encoding, logger, imposterState) {
+function evaluate (predicate, request, logger, imposterState) {
     const predicateFn = Object.keys(predicate).find(key => Object.keys(predicates).indexOf(key) >= 0),
         clone = helpers.clone(predicate);
 
     if (predicateFn) {
-        return predicates[predicateFn](clone, request, encoding, logger, imposterState);
+        return predicates[predicateFn](clone, request, logger, imposterState);
     }
     else {
         throw errors.ValidationError('missing predicate', { source: predicate });

@@ -75,7 +75,7 @@ describe('--debug', function () {
             requestHeaders = { accept: 'application/json', Host: `localhost:${serverPort}`, Connection: 'keep-alive' };
 
         assert.deepEqual(actualWithoutEphemeralData, [{
-            responses: [{ is: { body: '1' } }, { is: { body: '2' } }],
+            responses: [{ is: { bodyEncoding: 'utf8', body: '1' } }, { is: { bodyEncoding: 'utf8', body: '2' } }],
             matches: [
                 {
                     timestamp: 'NOW',
@@ -86,13 +86,18 @@ describe('--debug', function () {
                         method: 'GET',
                         headers: requestHeaders,
                         ip: '::1',
+                        bodyEncoding: false,
                         body: ''
                     },
                     response: {
+                        bodyEncoding: 'utf8',
                         body: '1'
                     },
                     responseConfig: {
-                        is: { body: '1' }
+                        is: {
+                            bodyEncoding: 'utf8',
+                            body: '1'
+                        }
                     },
                     processingTime: 0
                 },
@@ -105,13 +110,18 @@ describe('--debug', function () {
                         method: 'GET',
                         headers: requestHeaders,
                         ip: '::1',
+                        bodyEncoding: false,
                         body: ''
                     },
                     response: {
+                        bodyEncoding: 'utf8',
                         body: '2'
                     },
                     responseConfig: {
-                        is: { body: '2' }
+                        is: {
+                            bodyEncoding: 'utf8',
+                            body: '2'
+                        }
                     },
                     processingTime: 0
                 }
@@ -132,14 +142,14 @@ describe('--debug', function () {
         const response = await mb.get(`/imposters/${serverPort}`);
 
         assert.deepEqual(response.body.stubs, [{
-            responses: [{ is: { body: '1' } }, { is: { body: '2' } }],
+            responses: [{ is: { bodyEncoding: 'utf8', body: '1' } }, { is: { bodyEncoding: 'utf8', body: '2' } }],
             _links: { self: { href: `${mb.url}/imposters/${serverPort}/stubs/0` } }
         }]);
     });
 
     it('should record final response from out of process proxy', async function () {
         const originServerPort = api.port + 2,
-            originServerStub = { responses: [{ is: { body: 'ORIGIN' } }] },
+            originServerStub = { responses: [{ is: { headers: { 'Content-Type': 'text/plain' }, body: 'ORIGIN' } }] },
             originServerRequest = { protocol: 'http', port: originServerPort, stubs: [originServerStub] },
             proxyServerPort = api.port + 3,
             proxyServerStub = { responses: [{ proxy: { to: `http://localhost:${originServerPort}` } }] },

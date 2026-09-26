@@ -55,14 +55,14 @@ describe('predicates', function () {
 
         it('should throw an error if encoding is base64', function () {
             try {
-                const predicate = { matches: { field: 'dGVzdA==' } },
-                    request = { field: 'dGVzdA==' };
-                predicates.evaluate(predicate, request, 'base64');
+                const predicate = { matches: { body: 'dGVzdA==' } },
+                    request = { body: 'dGVzdA==' };
+                predicates.evaluate(predicate, request);
                 assert.fail('should have thrown');
             }
             catch (error) {
                 assert.strictEqual(error.code, 'bad data');
-                assert.strictEqual(error.message, 'the matches predicate is not allowed in binary mode');
+                assert.strictEqual(error.message, 'the matches predicate is not allowed for binary bodies');
             }
         });
 

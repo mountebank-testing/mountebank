@@ -48,8 +48,8 @@ describe('predicates', function () {
         });
 
         it('should return true if ends with binary sequence and encoding is base64', function () {
-            const predicate = { endsWith: { field: Buffer.from([2, 3, 4]).toString('base64') } },
-                request = { field: Buffer.from([1, 2, 3, 4]).toString('base64') };
+            const predicate = { endsWith: { body: Buffer.from([2, 3, 4]).toString('base64') } },
+                request = { body: Buffer.from([1, 2, 3, 4]).toString('base64') };
             assert.ok(predicates.evaluate(predicate, request, 'base64'));
         });
 

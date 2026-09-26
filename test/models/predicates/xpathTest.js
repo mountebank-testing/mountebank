@@ -317,14 +317,14 @@ describe('predicates', function () {
             assert.ok(!predicates.evaluate(predicate, request));
         });
 
-        it('should throw an error if encoding is base64', function () {
+        it('should throw an error if body is binary', function () {
             try {
                 const predicate = {
-                        equals: { field: 'dGVzdA==' },
+                        equals: { body: 'dGVzdA==' },
                         xpath: { selector: 'dGVzdA==' }
                     },
-                    request = { field: 'dGVzdA==' };
-                predicates.evaluate(predicate, request, 'base64');
+                    request = { body: 'dGVzdA==' };
+                predicates.evaluate(predicate, request);
                 assert.fail('should have thrown');
             }
             catch (error) {

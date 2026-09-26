@@ -140,11 +140,11 @@ const assert = require('assert'),
                 assert.strictEqual(response.statusCode, 200);
                 assert.deepEqual(response.body.stubs, [
                     {
-                        responses: [{ is: { body: '1' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: '1' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/0` } }
                     },
                     {
-                        responses: [{ is: { body: '2' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: '2' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/1` } }
                     }
                 ]);
@@ -214,7 +214,7 @@ const assert = require('assert'),
                     port: port + 1,
                     name: imposter.name,
                     recordRequests: false,
-                    stubs: [{ responses: [{ is: { body: 'Hello, World!' } }] }]
+                    stubs: [{ responses: [{ is: { bodyEncoding: 'utf8', body: 'Hello, World!' } }] }]
                 });
             });
         });

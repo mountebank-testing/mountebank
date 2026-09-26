@@ -26,27 +26,26 @@ function create (logger) {
     const BINARY_CONTENT_ENCODINGS = [
         'gzip', 'br', 'compress', 'deflate'
     ];
-    const BINARY_MIME_TYPES = [
-        'audio/',
-        'application/epub+zip',
-        'application/gzip',
-        'application/java-archive',
-        'application/msword',
-        'application/octet-stream',
-        'application/pdf',
-        'application/rtf',
-        'application/vnd.ms-excel',
-        'application/vnd.ms-fontobject',
-        'application/vnd.ms-powerpoint',
-        'application/vnd.visio',
-        'application/x-shockwave-flash',
-        'application/x-tar',
-        'application/zip',
-        'font/',
-        'image/',
-        'model/',
-        'video/'
-    ];
+
+    /* eslint-disable quote-props */
+    const CHARSET_TO_ENCODING = {
+        'utf8': 'utf8',
+        'utf-8': 'utf8',
+        'iso88591': 'latin1',
+        'iso-8859-1': 'latin1',
+        '8859-1': 'latin1',
+        'iso-latin-1': 'latin1',
+        'latin-1': 'latin1',
+        'latin1': 'latin1',
+        'UTF8': 'utf8',
+        'UTF-8': 'utf8',
+        'ISO88591': 'latin1',
+        'ISO-8859-1': 'latin1',
+        'ISO-LATIN-1': 'latin1',
+        'LATIN-1': 'latin1',
+        'LATIN1': 'latin1'
+    };
+    /* eslint-enable quote-props */
 
     function addInjectedHeadersTo (request, headersToInject) {
         Object.keys(headersToInject || {}).forEach(key => {
@@ -125,15 +124,24 @@ function create (logger) {
         return proxiedRequest;
     }
 
-    function isBinaryResponse (headers) {
+    function guessEncoding (headers) {
         const contentEncoding = headers['content-encoding'] || '',
             contentType = headers['content-type'] || '';
 
         if (BINARY_CONTENT_ENCODINGS.some(binEncoding => contentEncoding.indexOf(binEncoding) >= 0)) {
-            return true;
+            return false;
         }
-
-        return BINARY_MIME_TYPES.some(typeName => contentType.indexOf(typeName) >= 0);
+        const [type, charset] = contentType.match(/^([^;]*)(?:.*?charset=([^;]+))?/).slice(1, 3);
+        if (charset) {
+            return CHARSET_TO_ENCODING[charset];
+        }
+        else if (type.match(/json/)) {
+            return 'utf8';
+        }
+        else if (type.match(/^text\//)) {
+            return 'latin1';
+        }
+        return false;
     }
 
     function maybeJSON (text) {
@@ -158,13 +166,12 @@ function create (logger) {
 
                 response.on('end', () => {
                     const body = Buffer.concat(packets),
-                        mode = isBinaryResponse(response.headers) ? 'binary' : 'text',
-                        encoding = mode === 'binary' ? 'base64' : 'utf8',
+                        encoding = guessEncoding(response.headers),
                         stubResponse = {
                             statusCode: response.statusCode,
                             headers: headersMap.ofRaw(response.rawHeaders).all(),
-                            body: maybeJSON(body.toString(encoding)),
-                            _mode: mode
+                            body: encoding ? maybeJSON(body.toString(encoding)) : body.toString('base64'),
+                            bodyEncoding: encoding
                         };
                     resolve(stubResponse);
                 });
