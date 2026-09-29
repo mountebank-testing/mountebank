@@ -20,7 +20,8 @@ const assert = require('assert'),
             name: 'filesystemBackedImpostersRepository',
             create: () => require('../../src/models/filesystemBackedImpostersRepository').create({ datadir: '.mbtest' }, Logger.create()),
             beforeEach: () => {},
-            afterEach: () => { fs.removeSync('.mbtest'); }
+            // Retry the delete; Windows won't remove a directory while a handle is still open
+            afterEach: () => fs.rm('.mbtest', { recursive: true, force: true, maxRetries: 10, retryDelay: 100 })
         }
     ],
     mock = require('../mock').mock;

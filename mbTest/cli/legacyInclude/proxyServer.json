@@ -1,0 +1,10 @@
+{
+  "port": 4548,
+  "protocol": "http",
+  "name": "proxy",
+  "stubs": [
+    {
+      "responses": [{ "is": { "body": "proxy" } }]
+    }
+  ]
+}

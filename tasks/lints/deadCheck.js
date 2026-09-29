@@ -30,7 +30,6 @@ const scan = require('./shared/scan'),
         '*.csv'
     ],
     whitelist = [
-        'coveralls',
         'eslint',
         'eslint-plugin-node',
         'eslint-plugin-mocha',

@@ -1,0 +1,10 @@
+{
+  "port": 4547,
+  "protocol": "http",
+  "name": "origin",
+  "stubs": [
+    {
+      "responses": [{ "is": { "body": "origin" } }]
+    }
+  ]
+}

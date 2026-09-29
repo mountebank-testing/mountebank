@@ -70,6 +70,17 @@ describe('--configfile', function () {
         assert.ok(eighth.body.indexOf('<id>123</id>') > 0);
     });
 
+    it('should support legacy ejs 2.x include syntax in configuration files', async function () {
+        const args = ['--configfile', path.join(__dirname, 'legacyInclude/imposters.ejs')];
+        await mb.start(args);
+
+        const origin = await http.get('/', 4547);
+        assert.strictEqual(origin.body, 'origin');
+
+        const proxy = await http.get('/', 4548);
+        assert.strictEqual(proxy.body, 'proxy');
+    });
+
     // This is the response resolver injection example on /docs/api/injection
     it('should evaluate stringify function in templates when loading configuration files', async function () {
         const args = ['--configfile', path.join(__dirname, 'templates/imposters.ejs'), '--allowInjection', '--localOnly'];

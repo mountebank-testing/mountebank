@@ -1,6 +1,6 @@
 {
   "name": "@mbtest/mountebank",
-  "version": "2.9.4",
+  "version": "2.9.6",
   "author": "Brandon Byars <brandon.byars@gmail.com>",
   "description": "Over the wire test doubles",
   "homepage": "http://www.mbtest.dev",
@@ -22,12 +22,13 @@
     "lint": "eslint src/ tasks/ test/ mbTest/ bin/mb && node tasks/lints/licenseCheck.js && node tasks/lints/deadCheck.js && node tasks/lints/objectCheck.js",
     "test:api": "node tasks/mbtest.js api",
     "test:cli": "cd mbTest && npm run cli",
-    "test:unit": "mocha --forbid-only --forbid-pending --reporter mocha-multi-reporters --reporter-options configFile=test/config.json 'test/**/*.js'",
-    "test:cover": "nyc --reporter=lcov --reporter=text --include='src/**' --exclude='src/public/**' npm run test:unit",
+    "test:unit": "mocha --forbid-only --forbid-pending --reporter mocha-multi-reporters --reporter-options configFile=test/config.json \"test/**/*.js\"",
+    "test:cover": "nyc --reporter=lcov --reporter=text --include=\"src/**\" --exclude=\"src/public/**\" npm run test:unit",
     "test:js": "cd mbTest && npm run js",
     "test:perf": "cd mbTest && npm run perf",
     "test:web": "node tasks/mbtest.js web",
     "test": "npm run lint && npm run test:cover && npm run test:api && npm run test:cli && npm run test:js",
+    "test:ci": "npm run test:cover && npm run test:api && npm run test:cli",
     "airplane": "MB_AIRPLANE_MODE=true npm test"
   },
   "files": [
@@ -53,7 +54,7 @@
     "service virtualization"
   ],
   "dependencies": {
-    "@xmldom/xmldom": "0.9.9",
+    "@xmldom/xmldom": "0.9.12",
     "cors": "2.8.6",
     "csv-parse": "7.0.2",
     "ejs": "3.1.10",
@@ -75,7 +76,6 @@
     "yargs": "17.7.2"
   },
   "devDependencies": {
-    "coveralls": "3.1.1",
     "eslint": "8.56.0",
     "eslint-plugin-node": "11.1.0",
     "firebase-tools": "15.30.1",
@@ -83,9 +83,9 @@
     "jsdom": "26.1.0",
     "license-checker": "25.0.1",
     "mbTest": "file:./mbTest",
-    "mocha": "10.8.2",
-    "mocha-multi-reporters": "1.5.1",
-    "nc": "^1.0.3",
+    "mocha": "12.0.2",
+    "mocha-multi-reporters": "1.5.2",
+    "nc": "^1.1.2",
     "nyc": "^18.0.0",
     "snyk": "1.1307.2"
   },

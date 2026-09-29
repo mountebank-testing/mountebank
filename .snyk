@@ -1,6 +1,31 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
 version: v1.13.5
-ignore: {}
+ignore:
+  # The default --configfile formatter (@mbtest/mountebank-formatters) deliberately pins ejs 2.7.4.
+  # ejs 3.x removed the legacy '<% include file %>' syntax that is documented for config files on
+  # /docs/commandLine#config-files, so upgrading it would break existing users' templates. The
+  # 'legacy ejs 2.x include syntax' test in mbTest/cli/configFileTest.js fails if it is ever upgraded.
+  # Revisit alongside a formatter release that keeps the documented syntax working on ejs 3.x.
+  SNYK-JS-EJS-2803307:
+    - '@mbtest/mountebank-formatters > ejs':
+        reason: >-
+          Not reachable. The advisory requires passing unrestricted render options to
+          ejs.renderFile via 'view options', and is exploitable only where the server is
+          already vulnerable to prototype pollution. The formatter calls ejs.render directly
+          with an options object it builds itself and never calls renderFile. The only
+          attacker-influenced input is the operator's own --configfile, which mountebank
+          already evaluates as arbitrary JavaScript under --allowInjection, so write access
+          to that file confers code execution regardless of this advisory.
+        expires: 2027-03-25T00:00:00.000Z
+        created: 2026-09-25T00:00:00.000Z
+  SNYK-JS-EJS-6689533:
+    - '@mbtest/mountebank-formatters > ejs':
+        reason: >-
+          Not reachable. Pollution protection only matters for templates supplied by an
+          untrusted party; the sole template source is the operator's own --configfile, which
+          mountebank already evaluates as arbitrary JavaScript under --allowInjection.
+        expires: 2027-03-25T00:00:00.000Z
+        created: 2026-09-25T00:00:00.000Z
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   SNYK-JS-LODASH-450202:
