@@ -129,7 +129,7 @@ describe('DELETE /imposters', function () {
                     numberOfRequests: 0,
                     requests: [],
                     stubs: [{
-                        responses: [{ is: { body: 'Hello, World!' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'Hello, World!' } }],
                         _links: { self: { href: `${api.url}/imposters/${isImposter.port}/stubs/0` } }
                     }],
                     _links: {

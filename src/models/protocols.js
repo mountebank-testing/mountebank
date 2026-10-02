@@ -41,8 +41,7 @@ function load (builtInProtocols, customProtocols, options, isAllowedConnection, 
                 metadata: server.metadata,
                 stubs: stubs,
                 resolver: resolver,
-                close: server.close,
-                encoding: server.encoding || 'utf8'
+                close: server.close
             };
         };
     }

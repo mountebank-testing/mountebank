@@ -15,6 +15,12 @@ function create (protocol) {
         if (!Object.keys(spec.headers).some(key => key.toLowerCase() === 'accept')) {
             spec.headers.accept = 'application/json';
         }
+        if (!('responseEncoding' in spec)) {
+            spec.responseEncoding = 'utf8';
+        }
+        if (!('requestEncoding' in spec)) {
+            spec.requestEncoding = 'utf8';
+        }
         spec.rejectUnauthorized = false;
         return spec;
     }
@@ -44,9 +50,9 @@ function create (protocol) {
                     const buffer = Buffer.concat(packets),
                         contentType = response.headers['content-type'] || '';
 
-                    response.body = spec.mode === 'binary' ? buffer : buffer.toString('utf8');
+                    response.body = spec.responseEncoding ? buffer.toString(spec.responseEncoding) : buffer;
 
-                    if (contentType.indexOf('application/json') === 0) {
+                    if (contentType.indexOf('application/json') === 0 && spec.responseEncoding === 'utf8') {
                         response.body = JSON.parse(response.body);
                     }
                     resolve(response);
@@ -56,14 +62,12 @@ function create (protocol) {
             request.on('error', reject);
 
             if (spec.body) {
-                if (spec.mode === 'binary') {
-                    request.write(spec.body);
-                }
-                else if (typeof spec.body === 'object') {
+                if (spec.headers['Content-Type'] === 'application/json' && spec.requestEncoding === 'utf8' && typeof spec.body === 'object') {
                     request.write(JSON.stringify(spec.body));
                 }
                 else {
-                    request.write(spec.body);
+                    // This covers both the Buffer situation and the non-utf8 string encoding.
+                    request.write(spec.body, spec.requestEncoding);
                 }
             }
             request.end();

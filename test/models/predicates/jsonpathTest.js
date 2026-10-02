@@ -251,7 +251,7 @@ describe('predicates', function () {
                     matches: { body: '111\\.222\\.333\\.*' },
                     jsonpath: { selector: '$.ipAddress' }
                 },
-                request = { body: '{ "ipAddress": "111.222.333.456" }' };
+                request = { bodyEncoding: 'utf8', body: '{ "ipAddress": "111.222.333.456" }' };
             assert.ok(predicates.evaluate(predicate, request));
         });
     });
