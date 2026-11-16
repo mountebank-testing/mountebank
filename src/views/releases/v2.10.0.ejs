@@ -1,0 +1,47 @@
+<h1>v<%= releaseVersion %></h1>
+
+<p class='info-icon'>Be sure to keep up with the latest releases by subscribing to the
+    <a href='http://www.mbtest.dev/feed'>ATOM feed</a>.</p>
+
+<h2>New Features</h2>
+
+<ul class='bullet-list'>
+    <li>
+        Added a <a href='http://www.mbtest.dev/docs/api/behaviors#behavior-chaos'><code>chaos</code>
+        behavior</a> for probabilistic fault injection, useful for resilience and chaos engineering
+        tests. It can replace a percentage of responses with an error status code
+        (<code>errorRate</code> and <code>errorStatusCode</code>), delay a percentage of responses by
+        a random amount of time (<code>latencyRate</code> and <code>maxLatencyMs</code>), or both.
+    </li>
+</ul>
+
+<h2>Changes</h2>
+
+<ul class='bullet-list'>
+    <li>mountebank now requires node v20.19 or higher, up from v20. The newer minimum is needed for
+        node's support of <code>require</code>ing ES modules, which <code>http-proxy-agent</code>
+        relies on after its move to ESM</li>
+    <li>Updated <code>http-proxy-agent</code> to v9, used when proxying through an
+        <a href='http://www.mbtest.dev/docs/api/proxies'>http proxy</a> configured with the
+        <code>HTTP_PROXY</code> environment variable. Proxying behavior is unchanged</li>
+    <li>Updated <code>smtp-server</code> to v3.21.3 and <code>mailparser</code> to v3.14.2, used by
+        <a href='http://www.mbtest.dev/docs/protocols/smtp'>smtp</a> imposters</li>
+    <li>Updated <code>csv-parse</code> to v7.0.3, used by the
+        <a href='http://www.mbtest.dev/docs/api/behaviors#behavior-lookup'><code>lookup</code>
+        behavior</a></li>
+    <li>Resolved a denial of service advisory in <code>body-parser</code>, which mountebank pulls in
+        through <code>express</code>. <code>express</code> itself is unchanged at v5.1.0</li>
+</ul>
+
+<h2>Contributors</h2>
+<p>Many thanks to the following kind folks for help with this release, either through bug reports,
+    suggestions, or direct code contributions:</p>
+
+<ul class='bullet-list'>
+    <li>Tuğkan Boz</li>
+    <li>Matthew Herman</li>
+</ul>
+
+<h2>Install</h2>
+
+<pre><code>npm install -g @mbtest/mountebank@<%= releaseVersion %></code></pre>

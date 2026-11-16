@@ -124,6 +124,7 @@
     <li><code>shellTransform</code> - post-processes the response using a command line application</li>
     <li><code>copy</code> - copies a value from the request into the response</li>
     <li><code>lookup</code> - lookups values from an external data source</li>
+    <li><code>chaos</code> - probabilistically injects errors and latency into the response</li>
   </ul>
 
   <p>More information: <a href='/docs/api/behaviors'>behaviors</a></p>
@@ -174,6 +175,21 @@
     <p>Post-processes the response by looking up data from an external data source using a key
     selected from the request. The given tokens in the response are replaced with the looked up values.
     You can select the appropriate keys from the request using regular expressions, xpath, or jsonpath.</p>
+
+    <p class='info-icon'>More information: <a href='/docs/api/behaviors'>behaviors</a></p>
+</div>
+
+<div id='imposter-stubs-behaviors-chaos-description'>
+    <p>Probabilistically injects faults into the response, which is useful for resilience and chaos
+    engineering tests. <code>errorRate</code> sets the probability that the response is replaced with
+    an error, using <code>errorStatusCode</code> (default 500) as the status code.
+    <code>latencyRate</code> sets the probability that the response is delayed by a random amount of
+    time up to <code>maxLatencyMs</code> (default 1000). Error and latency injection are independent,
+    and every field is optional and defaults to doing nothing.</p>
+
+    <p class='warning-icon'>Error injection only applies to the http and https protocols. To simulate
+    connection-level problems on other protocols, use a
+    <a href='/docs/api/faults'>fault</a> response instead.</p>
 
     <p class='info-icon'>More information: <a href='/docs/api/behaviors'>behaviors</a></p>
 </div>
