@@ -113,7 +113,7 @@ jobs:
 
   mac:
     macos:
-      xcode: 14.3.1
+      xcode: 27.3
     resource_class: m4pro.medium
     steps:
       - checkout
