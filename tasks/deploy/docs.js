@@ -16,5 +16,14 @@ if (!process.env.FIREBASE_TOKEN) {
 
 console.log('Deploying docs to firebase...');
 fs.copyFileSync('./firebase.json', `${dir}/firebase.json`);
-execSync(`../../../../node_modules/.bin/firebase deploy --token "${process.env.FIREBASE_TOKEN}" --project firebase-mountebank`,
-    { cwd: dir, stdio: 'inherit' });
+
+// Avoid failing the build due to firebase deploy issues since
+// this is only used for deploying docs and should not block the rest
+// of the build from running.
+try {
+    execSync(`../../../../node_modules/.bin/firebase deploy --token "${process.env.FIREBASE_TOKEN}" --project firebase-mountebank`,
+        { cwd: dir, stdio: 'inherit' });
+}
+catch (error) {
+    console.error(`\nWARNING: docs deploy to firebase failed (exit status ${error.status}).`);
+}
