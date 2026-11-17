@@ -1,0 +1,49 @@
+name: Dependency triage report
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+
+      # Read the committed npm lockfile without installing project dependencies
+      # or running their lifecycle scripts. Exit 1 can mean findings; the next
+      # step validates the report and rejects scanner errors.
+      - name: Collect npm dependency findings
+        shell: bash
+        run: |
+          status=0
+          npm audit --package-lock-only --ignore-scripts --json > "$RUNNER_TEMP/npm-audit.json" || status=$?
+          if [ "$status" -gt 1 ]; then
+            cat "$RUNNER_TEMP/npm-audit.json"
+            exit "$status"
+          fi
+
+      # Exit 1 reports findings; exit 2 means judgement was not possible.
+      # Neither is treated as a clean run or accepted into a baseline.
+      - name: Build ranked HTML report
+        id: judge
+        run: |
+          npx --yes zero-shelter@0.0.10 judge \
+            --input "$RUNNER_TEMP/npm-audit.json" \
+            --format html --output "$RUNNER_TEMP/zero-shelter-report.html"
+
+      - name: Upload dependency report
+        if: always() && steps.judge.outcome != 'skipped'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dependency-triage-report
+          path: ${{ runner.temp }}/zero-shelter-report.html
+          if-no-files-found: error
+          retention-days: 7
