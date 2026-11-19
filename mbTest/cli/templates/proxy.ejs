@@ -28,6 +28,7 @@
                 const stubResponse = {
                         statusCode: response.statusCode,
                         headers: response.headers,
+                        bodyEncoding: 'utf8',
                         body
                     };
                 logger.info('Successfully proxied: ' + JSON.stringify(stubResponse));
