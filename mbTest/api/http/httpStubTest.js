@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('assert'),
+    buffer = require('buffer'),
     api = require('../../api').create(),
     BaseHttpClient = require('../../baseHttpClient'),
     port = api.port + 1,
@@ -161,14 +162,19 @@ function merge (defaults, overrides) {
             });
 
             it('should support sending binary response', async function () {
-                const buffer = Buffer.from([0, 1, 2, 3]),
-                    stub = { responses: [{ is: { body: buffer.toString('base64'), _mode: 'binary' } }] },
+                const bodyBuffer = Buffer.from([0, 1, 2, 3]),
+                    stub = { responses: [{
+                        is: {
+                            headers: { 'Content-Type': 'application/octetstream' }, // Tell the client (the proxy recorder) what kind of content.
+                            bodyEncoding: false, // Tell the stub that the provided body is utf8
+                            body: bodyBuffer.toString('base64')
+                        } }] },
                     request = { protocol, port, stubs: [stub] };
                 await api.createImposter(request);
 
-                const response = await client.responseFor({ method: 'GET', port, path: '/', mode: 'binary' });
+                const response = await client.responseFor({ method: 'GET', port, path: '/', responseEncoding: false });
 
-                assert.deepEqual(response.body.toJSON().data, [0, 1, 2, 3]);
+                assert.deepEqual(response.body, bodyBuffer);
             });
 
             it('should support JSON bodies', async function () {
@@ -228,15 +234,69 @@ function merge (defaults, overrides) {
                 assert.strictEqual(response.body, 'SUCCESS');
             });
 
+            it('should support treating the body as binary for predicate matching', async function () {
+                const stub = {
+                        responses: [{ is: { body: 'SUCCESS' } }],
+                        predicates: [
+                            { equals: { bodyEncoding: 'latin1', body: 'æøå' } },
+                            { equals: { bodyEncoding: null, body: '5vjl' } }
+                        ]
+                    },
+                    request = { protocol, port, stubs: [stub] };
+                await api.createImposter(request);
+
+                const spec = {
+                    method: 'POST',
+                    path: '/',
+                    port,
+                    requestEncoding: 'latin1',
+                    headers: { 'Content-Type': 'text/plain; charset=latin1' },
+                    body: 'æøå'
+                };
+                const response = await client.responseFor(spec);
+
+                assert.strictEqual(response.body, 'SUCCESS');
+            });
+
+            it('should support treating the body as non-utf8 text for predicate matching', async function () {
+                const stub = {
+                        responses: [{ is: { body: 'SUCCESS' } }],
+                        predicates: [
+                            { equals: { bodyEncoding: 'latin1', body: 'æøå' } },
+                            { equals: { bodyEncoding: null, body: '5vjl' } }
+                        ]
+                    },
+                    request = { protocol, port, stubs: [stub] };
+                await api.createImposter(request);
+
+                const spec = {
+                    method: 'POST',
+                    path: '/',
+                    port,
+                    requestEncoding: null,
+                    headers: { 'Content-Type': 'text/plain; charset=latin1' },
+                    body: buffer.transcode(Buffer.from('æøå'), 'utf8', 'latin1')
+                };
+                const response = await client.responseFor(spec);
+
+                assert.strictEqual(response.body, 'SUCCESS');
+            });
+
             it('should support changing default response for stub', async function () {
                 const stub = {
                         responses: [
-                            { is: { body: 'Wrong address' } },
+                            {
+                                is: {
+                                    body: 'Wrong address'
+                                }
+                            },
                             { is: { statusCode: 500 } }
                         ],
                         predicates: [{ equals: { path: '/' } }]
                     },
-                    defaultResponse = { statusCode: 404, body: 'Not found' },
+                    defaultResponse = { statusCode: 404,
+                        bodyEncoding: 'utf8', // Tell the stub that the provided body is utf8
+                        body: 'Not found' },
                     request = { protocol, port, defaultResponse: defaultResponse, stubs: [stub] };
                 await api.createImposter(request);
 
@@ -298,7 +358,7 @@ function merge (defaults, overrides) {
                             is: {
                                 headers: { 'Content-Length': 852 },
                                 body: 'H4sIAAAAAAAEAO29B2AcSZYlJi9tynt/SvVK1+B0oQiAYBMk2JBAEOzBiM3mkuwdaUcjKasqgcplVmVdZhZAzO2dvPfee++999577733ujudTif33/8/XGZkAWz2zkrayZ4hgKrIHz9+fB8/In7xR8Xso0cfzab3p/vn053t/NPZbHt/cn5/++D+5N72pwefTnd2JtP8/CD7aPRR02btuqH2zXo6zZuGPpplbfbRo1/80arMlviZXWZFmU2Ksmiv8XdbLPIfVMucXsqb9vfPZy29VC3LAh/94o8WFb91XlcLarFz/9HODn3fVvTH3h7++CX015qbbmxzldMwbmjTztc3tjmvixvbNFnrt3mIj02bXfyBNutgXJE2v4RagWi//zRftnVWonlZXVALmpNFdpH//uuaPvxo3rar5tHdu9NFsz3LL8fL7JJIOivejafV4m5z3bT54u55UebN3d27/GIzXi0vqDei8VsPCMEI3gWadd5U65qm8qNH3/vFHy2zBVH6o5d1dVnM8jp9WtT5tK3qawLWg7PM2zH9n6C4F+dZvcim1+//YlUW0yJv0l+YUufTfLYmxG757vG6nVd18YOsLapl+rxowGC3efFZVS/WZXZ7JA1ZXuXneZ0vpzmh+0oJmH6+pu9ui/MJTU0xzUqM9qLOFrd9z9I1rc7Tb+dZ2c4BgtFq0mKZvsiv0t+nqt9uhPd9YnMa+8Cc5wugtJoX0/RsiXZC2Ff5L1qTAKeg2kboDtuTqqpnxVLeJ4Sf5Mv8vGib94JRZsXivd54WefbJ3ndFudEYe76xpeJINNqdV0XF3OSbPd72rR1sbxIdyGtv+T/AdOWKsArBQAA',
-                                _mode: 'binary'
+                                bodyEncoding: false
                             }
                         }]
                     },
@@ -316,7 +376,7 @@ function merge (defaults, overrides) {
                             is: {
                                 headers: { 'Content-Length': 274 },
                                 body: 'iVBORw0KGgoAAAANSUhEUgAAAGQAAAAyBAMAAABYG2ONAAAAFVBMVEUAAAD///9/f39fX1+fn58f\nHx8/Pz8rYiDqAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAo0lEQVRIie2Qyw7CIBBFb2DwO5q+1o0L\n1w0NrrHRPQnV//8EAUl0ga1ujIs5CZAz4YYZAIZhmN/QQOkjzq3LLuv6xUrQHmTJGphcEGE9rUQ3\nY4bqqrDjAlgQoJK9Z8YBmFy8Gp8DeSeTfRSBCf2I6/JN5ORiRfrNiIfqh9S9SVPL27A1C0G4EX2e\nJR7J1iI7rbG0Vf4x0UwPW0Uh3i0bwzD/yR11mBj1DIKiVwAAAABJRU5ErkJggg==\n',
-                                _mode: 'binary'
+                                bodyEncoding: false
                             }
                         }]
                     },
@@ -364,7 +424,7 @@ function merge (defaults, overrides) {
                     request = { protocol, port, stubs: [stub] };
                 await api.createImposter(request);
 
-                const response = await client.post('/', xml, port);
+                const response = await client.post('/', xml, port, { 'Content-Type': 'application/xml; charset=utf-8' });
 
                 assert.strictEqual(response.body, 'SUCCESS');
             });
@@ -426,7 +486,7 @@ function merge (defaults, overrides) {
                         headers: {
                             'Content-Encoding': 'gzip'
                         },
-                        mode: 'binary',
+                        requestEncoding: false,
                         body: zlib.gzipSync('{"key": "value", "arr": [3,2,1]}')
                     },
                     stub = {
@@ -461,15 +521,15 @@ function merge (defaults, overrides) {
                 assert.strictEqual(putResponse.statusCode, 200);
                 assert.deepEqual(putResponse.body.stubs, [
                     {
-                        responses: [{ is: { body: 'FIRST' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'FIRST' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/0` } }
                     },
                     {
-                        responses: [{ is: { body: 'ORIGINAL' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'ORIGINAL' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/1` } }
                     },
                     {
-                        responses: [{ is: { body: 'THIRD' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'THIRD' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/2` } }
                     }
                 ]);
@@ -495,16 +555,16 @@ function merge (defaults, overrides) {
                 assert.strictEqual(putResponse.statusCode, 200, JSON.stringify(putResponse.body));
                 assert.deepEqual(putResponse.body.stubs, [
                     {
-                        responses: [{ is: { body: 'first' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'first' } }],
                         predicates: [{ equals: { path: '/first' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/0` } }
                     },
                     {
-                        responses: [{ is: { body: 'CHANGED' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'CHANGED' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/1` } }
                     },
                     {
-                        responses: [{ is: { body: 'third' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'third' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/2` } }
                     }
                 ]);
@@ -529,11 +589,11 @@ function merge (defaults, overrides) {
                 assert.strictEqual(deleteResponse.statusCode, 200);
                 assert.deepEqual(deleteResponse.body.stubs, [
                     {
-                        responses: [{ is: { body: 'first' } }], predicates: [{ equals: { path: '/first' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'first' } }], predicates: [{ equals: { path: '/first' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/0` } }
                     },
                     {
-                        responses: [{ is: { body: 'third' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'third' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/1` } }
                     }
                 ]);
@@ -558,15 +618,15 @@ function merge (defaults, overrides) {
                 assert.strictEqual(postResponse.statusCode, 200);
                 assert.deepEqual(postResponse.body.stubs, [
                     {
-                        responses: [{ is: { body: 'first' } }], predicates: [{ equals: { path: '/first' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'first' } }], predicates: [{ equals: { path: '/first' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/0` } }
                     },
                     {
-                        responses: [{ is: { body: 'SECOND' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'SECOND' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/1` } }
                     },
                     {
-                        responses: [{ is: { body: 'third' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'third' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/2` } }
                     }
                 ]);
@@ -607,15 +667,15 @@ function merge (defaults, overrides) {
                 assert.strictEqual(postResponse.statusCode, 200);
                 assert.deepEqual(postResponse.body.stubs, [
                     {
-                        responses: [{ is: { body: 'first' } }], predicates: [{ equals: { path: '/first' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'first' } }], predicates: [{ equals: { path: '/first' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/0` } }
                     },
                     {
-                        responses: [{ is: { body: 'third' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'third' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/1` } }
                     },
                     {
-                        responses: [{ is: { body: 'LAST' } }],
+                        responses: [{ is: { bodyEncoding: 'utf8', body: 'LAST' } }],
                         _links: { self: { href: `${api.url}/imposters/${port}/stubs/2` } }
                     }
                 ]);
